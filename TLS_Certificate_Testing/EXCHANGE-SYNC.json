@@ -1,0 +1,121 @@
+{
+  "id": "EXCHANGE_SYNC",
+  "initial": "INITIALIZING",
+  "states": {
+    "INITIALIZING": {
+      "on": {
+        "STARTED": [
+          {
+            "target": "LOADING_TWO_PARAMETERS",
+            "actions": [],
+            "internal": false
+          }
+        ]
+      }
+    },
+    "LOADING_TWO_PARAMETERS": {
+      "entry": [
+        {
+          "type": "get_parameters (ctrl a b)"
+        },
+        {
+          "type": "done"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "SYNC",
+            "actions": [
+              {
+                "type": "assign (ctrl) (ctrl)"
+              },
+              {
+                "type": "assign (a) (a)"
+              },
+              {
+                "type": "assign (b) (b)"
+              }
+            ],
+            "internal": false
+          }
+        ]
+      }
+    },
+    "SYNC": {
+      "entry": {
+        "type": "sync (ctrl a b)"
+      },
+      "on": {
+        "SYNC_SENT": [
+          {
+            "target": "WAITING_FOR_SYNC",
+            "actions": [
+              {
+                "type": "assign (ctrl) (ctrl)"
+              }
+            ],
+            "internal": false
+          }
+        ]
+      }
+    },
+    "WAITING_FOR_SYNC": {
+      "entry": [
+        {
+          "type": "set (5) (timeout)"
+        },
+        {
+          "type": "wait_sync_signal (ctrl timeout) (a b)"
+        }
+      ],
+      "on": {
+        "TIMEOUT": [
+          {
+            "target": "RETURNING_TIMEOUT",
+            "actions": []
+          }
+        ],
+        "SYNC_AVAILABLE": [
+          {
+            "target": "RETURNING_SYNC_MESSAGES",
+            "actions": [
+              {
+                "type": "assign (a) (a)"
+              },
+              {
+                "type": "assign (b) (b)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "RETURNING_TIMEOUT": {
+      "entry": [
+        {
+          "type": "set (TIMEOUT) (event)"
+        },
+        {
+          "type": "set (NULL) (a)"
+        },
+        {
+          "type": "set (NULL) (b)"
+        },
+        {
+          "type": "return_values (event a b)"
+        }
+      ]
+    },
+    "RETURNING_SYNC_MESSAGES": {
+      "entry": [
+        {
+          "type": "set (DONE) (event)"
+        },
+        {
+          "type": "return_values (event a b)"
+        }
+      ]
+    }
+  }
+}

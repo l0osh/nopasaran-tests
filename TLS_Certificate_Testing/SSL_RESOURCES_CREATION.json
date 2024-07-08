@@ -1,0 +1,88 @@
+{
+  "id": "SSL_RESOURCES_CREATION",
+  "initial": "INIT",
+  "states": {
+    "INIT": {
+      "on": {
+        "STARTED": [
+          {
+            "target": "LOADING_VARIABLES",
+            "actions": []
+          }
+        ]
+      }
+    },
+    "LOADING_VARIABLES": {
+      "entry": [
+        {
+          "type": "get_parameters (hostname)"
+        },
+        {
+          "type": "done"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "GENERATING_KEY_AND_CERT",
+            "actions": [
+              {
+                "type": "assign (hostname) (hostname)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "GENERATING_KEY_AND_CERT": {
+      "entry": [
+        {
+          "type": "generate_private_key (private_key)"
+        },
+        {
+          "type": "prepare_certificate_subject (csr)"
+        },
+        {
+          "type": "add_common_name (csr hostname) (csr)"
+        },
+        {
+          "type": "build_certificate (private_key csr) (cert)"
+        },
+        {
+          "type": "convert_private_key_to_pem (private_key) (key_pem)"
+        },
+        {
+          "type": "convert_certificate_to_pem (cert) (cert_pem)"
+        },
+        {
+          "type": "done"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "CERTIFICATE_CREATED",
+            "actions": [
+              {
+                "type": "assign (key_pem) (key_pem)"
+              },
+              {
+                "type": "assign (cert_pem) (cert_pem)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "CERTIFICATE_CREATED": {
+      "entry": [
+        {
+          "type": "set (CERTIFICATE_CREATED) (event)"
+        },
+        {
+          "type": "return_values (event key_pem cert_pem)"
+        }
+      ]
+    }
+  }
+}

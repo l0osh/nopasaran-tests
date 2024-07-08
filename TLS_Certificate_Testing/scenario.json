@@ -1,0 +1,203 @@
+{
+  "id": "MAIN",
+  "initial": "INIT",
+  "states": {
+    "INIT": {
+      "on": {
+        "STARTED": [
+          {
+            "target": "SETTING_UP_CONTROL_CHANNEL",
+            "actions": [],
+            "meta": {}
+          }
+        ]
+      }
+    },
+    "SETTING_UP_CONTROL_CHANNEL": {
+      "entry": [
+        {
+          "type": "get_from_file (variables role) (role)"
+        },
+        {
+          "type": "set (client) (client)"
+        },
+        {
+          "type": "get_from_file (variables controller_conf_filename) (controller_conf_filename)"
+        },
+        {
+          "type": "call (CONTROL_CHANNEL_SET_UP role controller_conf_filename) (event ctrl)"
+        },
+        {
+          "type": "trigger (event)"
+        }
+      ],
+      "on": {
+        "CONTROL_CHANNEL_READY": [
+          {
+            "target": "CREATING_SSL_RESOURCES",
+            "cond": "equal (role client)",
+            "actions": [
+              {
+                "type": "assign (role) (role)"
+              },
+              {
+                "type": "assign (ctrl) (ctrl)"
+              }
+            ]
+          },
+          {
+            "target": "LOADING_DUMMY_VARIABLES",
+            "actions": [
+              {
+                "type": "assign (ctrl) (ctrl)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "CREATING_SSL_RESOURCES": {
+      "entry": [
+        {
+          "type": "get_from_file (variables hostname) (hostname)"
+        },
+        {
+          "type": "call (SSL_RESOURCES_CREATION hostname) (event key_pem cert_pem)"
+        },
+        {
+          "type": "trigger (event)"
+        }
+      ],
+      "on": {
+        "CERTIFICATE_CREATED": [
+          {
+            "target": "SENDING_SYNC_MESSAGE",
+            "actions": [
+              {
+                "type": "assign (key_pem) (private_key)"
+              },
+              {
+                "type": "assign (cert_pem) (cert)"
+              },
+              {
+                "type": "assign (ctrl) (ctrl)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "LOADING_DUMMY_VARIABLES": {
+      "entry": [
+        {
+          "type": "set (NULL) (private_key)"
+        },
+        {
+          "type": "set (NULL) (cert)"
+        },
+        {
+          "type": "done"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "SENDING_SYNC_MESSAGE",
+            "actions": [
+              {
+                "type": "assign (private_key) (private_key)"
+              },
+              {
+                "type": "assign (cert) (cert)"
+              },
+              {
+                "type": "assign (ctrl) (ctrl)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "SENDING_SYNC_MESSAGE": {
+      "entry": [
+        {
+          "type": "call (EXCHANGE_SYNC ctrl private_key cert) (event sync_private_key sync_cert)"
+        },
+        {
+          "type": "get_from_file (variables role) (role)"
+        },
+        {
+          "type": "set (client) (client)"
+        },
+        {
+          "type": "trigger (event)"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "GETTING_CERTIFICATE",
+            "cond": "equal (role client)",
+            "actions": [
+              {
+                "type": "assign (cert) (original_certificate)"
+              }
+            ]
+          },
+          {
+            "target": "LISTENING_FOR_TLS",
+            "actions": [
+              {
+                "type": "assign (sync_cert) (cert_file)"
+              },
+              {
+                "type": "assign (sync_private_key) (key_file)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "GETTING_CERTIFICATE": {
+      "entry": [
+        {
+          "type": "get_from_file (variables ip) (ip)"
+        },
+        {
+          "type": "get_from_file (variables port) (port)"
+        },
+        {
+          "type": "get_from_file (variables hostname) (hostname)"
+        },
+        {
+          "type": "get_from_file (variables waiting_setup_time) (waiting_setup_time)"
+        },
+        {
+          "type": "wait (waiting_setup_time)"
+        },
+        {
+          "type": "get_certificate (ip port host) (certificate_server)"
+        },
+        {
+          "type": "extract_public_key (certificate_server) (public_key_server)"
+        }
+      ]
+    },
+    "LISTENING_FOR_TLS": {
+      "entry": [
+        {
+          "type": "get_from_file (variables port) (port)"
+        },
+        {
+          "type": "set (5) (timeout)"
+        },
+        {
+          "type": "set (0.0.0.0) (host)"
+        },
+        {
+          "type": "start_ssl_server (cert_file key_file host port timeout)"
+        }
+      ]
+    }
+  }
+}
