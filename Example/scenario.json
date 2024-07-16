@@ -16,7 +16,7 @@
     "Second State": {
       "entry": [
         {
-          "type": "set (dummy) (returned)"
+          "type": "set (10) (returned)"
         },
         {
           "type": "return_values (returned)"
