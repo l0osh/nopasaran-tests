@@ -1,0 +1,27 @@
+{
+  "id": "EXAMPLE",
+  "initial": "First State",
+  "states": {
+    "First State": {
+      "on": {
+        "STARTED": [
+          {
+            "target": "Second State",
+            "actions": [],
+            "meta": {}
+          }
+        ]
+      }
+    },
+    "Second State": {
+      "entry": [
+        {
+          "type": "set (dummy) (returned)"
+        },
+        {
+          "type": "return_values (returned)"
+        }
+      ]
+    }
+  }
+}
