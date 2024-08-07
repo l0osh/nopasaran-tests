@@ -1,1 +1,1 @@
-# nopasaran-scenarios
+# nopasaran-tests
