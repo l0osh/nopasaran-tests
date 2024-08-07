@@ -1,0 +1,51 @@
+{
+  "id": "HTTP1_REQUEST_BUILD",
+  "initial": "INIT",
+  "states": {
+    "INIT": {
+      "on": {
+        "STARTED": [
+          {
+            "target": "BUILDING_REQUEST",
+            "actions": []
+          }
+        ]
+      }
+    },
+    "BUILDING_REQUEST": {
+      "entry": [
+        {
+          "type": "get_from_file (variables request-data) (request-data)"
+        },
+        {
+          "type": "construct_http_1_request_packet (request-data) (request)"
+        },
+        {
+          "type": "done"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "BUILDING_DONE",
+            "actions": [
+              {
+                "type": "assign (request) (request)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "BUILDING_DONE": {
+      "entry": [
+        {
+          "type": "set (REQUEST_BUILT) (event)"
+        },
+        {
+          "type": "return_values (event request)"
+        }
+      ]
+    }
+  }
+}
