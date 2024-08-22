@@ -1,0 +1,59 @@
+{
+  "id": "GET_SEQ_NUMBERS",
+  "initial": "INITIALIZING",
+  "states": {
+    "INITIALIZING": {
+      "on": {
+        "STARTED": [
+          {
+            "target": "GETTING_SEQ_NUMBERS",
+            "actions": [],
+            "meta": {}
+          }
+        ]
+      }
+    },
+    "GETTING_SEQ_NUMBERS": {
+      "entry": [
+        {
+          "type": "get_parameters (pkt)"
+        },
+        {
+          "type": "get_TCP_seq (pkt) (seq)"
+        },
+        {
+          "type": "get_TCP_ack (pkt) (ack)"
+        },
+        {
+          "type": "create_dict (dict)"
+        },
+        {
+          "type": "add_element_to_dict (dict seq) (dict)"
+        },
+        {
+          "type": "add_element_to_dict (dict ack) (dict)"
+        },
+        {
+          "type": "done"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "ENDING",
+            "actions": [
+              {
+                "type": "assign (dict) (dict)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "ENDING": {
+      "entry": {
+        "type": "return_values (dict)"
+      }
+    }
+  }
+}

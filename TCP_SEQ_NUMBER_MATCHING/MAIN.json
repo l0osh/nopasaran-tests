@@ -1,0 +1,116 @@
+{
+  "id": "MAIN",
+  "initial": "INITIALIZING",
+  "states": {
+    "INITIALIZING": {
+      "on": {
+        "STARTED": [
+          {
+            "target": "DEFINING_TIMEOUT_TARGET",
+            "actions": [],
+            "internal": false
+          }
+        ]
+      }
+    },
+    "DEFINING_TIMEOUT_TARGET": {
+      "entry": [
+        {
+          "type": "redirect (TIMEOUT ENDING)"
+        },
+        {
+          "type": "done"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "SETTING_UP_CONTROL_CHANNEL",
+            "actions": [],
+            "internal": false
+          }
+        ]
+      }
+    },
+    "SETTING_UP_CONTROL_CHANNEL": {
+      "entry": [
+        {
+          "type": "get_from_file (variables role) (role)"
+        },
+        {
+          "type": "get_from_file (variables controller_conf_filename) (controller_conf_filename)"
+        },
+        {
+          "type": "call (CONTROL_CHANNEL_SET_UP role controller_conf_filename) (event ctrl)"
+        },
+        {
+          "type": "trigger (event)"
+        }
+      ],
+      "on": {
+        "CONTROL_CHANNEL_READY": [
+          {
+            "target": "SETTING_UP_VARIABLES",
+            "actions": [
+              {
+                "type": "assign (ctrl) (ctrl)"
+              }
+            ],
+            "internal": false
+          }
+        ]
+      }
+    },
+    "SETTING_UP_VARIABLES": {
+      "entry": [
+        {
+          "type": "call (SETTING_UP_VARIABLES) (event pkt queue)"
+        },
+        {
+          "type": "trigger (event)"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "EXCHANGING_TCP_DATA",
+            "actions": [
+              {
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              },
+              {
+                "type": "assign (ctrl) (ctrl)"
+              }
+            ],
+            "internal": false
+          }
+        ]
+      }
+    },
+    "EXCHANGING_TCP_DATA": {
+      "entry": {
+        "type": "call (TCP_EXCHANGE ctrl pkt queue) (event dict sync_dict)"
+      },
+      "on": {
+        "DONE": [
+          {
+            "target": "ENDING",
+            "actions": [
+              {
+                "type": "assign (dict) (dict)"
+              },
+              {
+                "type": "assign (sync_dict) (sync_dict)"
+              }
+            ],
+            "internal": false
+          }
+        ]
+      }
+    },
+    "ENDING": {}
+  }
+}

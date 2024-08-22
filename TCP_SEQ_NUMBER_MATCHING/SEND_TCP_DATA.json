@@ -1,0 +1,423 @@
+{
+  "id": "SEND_TCP_DATA",
+  "initial": "INITIALIZING",
+  "states": {
+    "INITIALIZING": {
+      "on": {
+        "STARTED": [
+          {
+            "target": "LOADING_VARIABLES",
+            "actions": [],
+            "internal": false
+          }
+        ]
+      }
+    },
+    "LOADING_VARIABLES": {
+      "entry": [
+        {
+          "type": "get_from_file (variables role) (role)"
+        },
+        {
+          "type": "get_from_file (variables client) (client)"
+        },
+        {
+          "type": "get_from_file (variables server) (server)"
+        },
+        {
+          "type": "get_parameters (ctrl pkt queue)"
+        },
+        {
+          "type": "get_from_file (variables psh/ack) (psh/ack)"
+        },
+        {
+          "type": "get_from_file (variables ack) (ack)"
+        },
+        {
+          "type": "get_from_file (variables psh) (psh)"
+        },
+        {
+          "type": "get_from_file (variables data) (data)"
+        },
+        {
+          "type": "done"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "SENDING PSH",
+            "cond": "equal (role client)",
+            "actions": [
+              {
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              },
+              {
+                "type": "assign (ack) (ack)"
+              },
+              {
+                "type": "assign (psh/ack) (psh/ack)"
+              },
+              {
+                "type": "assign (psh) (psh)"
+              },
+              {
+                "type": "assign (data) (data)"
+              }
+            ],
+            "internal": false
+          },
+          {
+            "target": "LISTENING",
+            "cond": "equal (role server)",
+            "actions": [
+              {
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              },
+              {
+                "type": "assign (ack) (ack)"
+              },
+              {
+                "type": "assign (psh/ack) (psh/ack)"
+              },
+              {
+                "type": "assign (psh) (psh)"
+              }
+            ],
+            "internal": false
+          },
+          {
+            "target": "LOADING_VARIABLES",
+            "actions": [
+              {
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              },
+              {
+                "type": "assign (ctrl) (ctrl)"
+              }
+            ],
+            "internal": false
+          }
+        ]
+      }
+    },
+    "SENDING PSH": {
+      "entry": [
+        {
+          "type": "set_TCP_flags (pkt psh) (pkt)"
+        },
+        {
+          "type": "set_TCP_payload (pkt data) (pkt)"
+        },
+        {
+          "type": "send (pkt)"
+        }
+      ],
+      "on": {
+        "PACKET_SENT": [
+          {
+            "target": "LISTENING",
+            "actions": [
+              {
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              },
+              {
+                "type": "assign (ack) (ack)"
+              },
+              {
+                "type": "assign (psh/ack) (psh/ack)"
+              },
+              {
+                "type": "assign (psh) (psh)"
+              }
+            ],
+            "internal": false
+          }
+        ]
+      }
+    },
+    "LISTENING": {
+      "entry": [
+        {
+          "type": "set (5) (timeout)"
+        },
+        {
+          "type": "wait_packet_signal (queue timeout)"
+        }
+      ],
+      "on": {
+        "PACKET_AVAILABLE": [
+          {
+            "target": "GETTING_FLAGS",
+            "actions": [
+              {
+                "type": "assign (queue) (queue)"
+              },
+              {
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (ack) (ack)"
+              },
+              {
+                "type": "assign (psh/ack) (psh/ack)"
+              },
+              {
+                "type": "assign (psh) (psh)"
+              }
+            ],
+            "internal": false
+          }
+        ],
+        "TIMEOUT": [
+          {
+            "target": "TIMEOUT ENDING",
+            "actions": [],
+            "internal": false
+          }
+        ]
+      }
+    },
+    "GETTING_FLAGS": {
+      "entry": [
+        {
+          "type": "get_TCP_flags (queue) (flags)"
+        },
+        {
+          "type": "set (TCP_PACKET_RECEIVED) (event)"
+        },
+        {
+          "type": "trigger (event)"
+        }
+      ],
+      "on": {
+        "TCP_PACKET_RECEIVED": [
+          {
+            "target": "HANDLING_PSH",
+            "cond": "equal (flags psh)",
+            "actions": [
+              {
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              },
+              {
+                "type": "assign (ack) (ack)"
+              },
+              {
+                "type": "assign (psh/ack) (psh/ack)"
+              },
+              {
+                "type": "assign (psh) (psh)"
+              }
+            ],
+            "internal": false
+          },
+          {
+            "target": "HANDLING_ACK",
+            "cond": "equal (flags ack)",
+            "actions": [
+              {
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              },
+              {
+                "type": "assign (ack) (ack)"
+              },
+              {
+                "type": "assign (psh/ack) (psh/ack)"
+              },
+              {
+                "type": "assign (psh) (psh)"
+              }
+            ],
+            "internal": false
+          },
+          {
+            "target": "HANDLING_PSH_ACK",
+            "cond": "equal (flags psh/ack)",
+            "actions": [
+              {
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              },
+              {
+                "type": "assign (ack) (ack)"
+              },
+              {
+                "type": "assign (psh/ack) (psh/ack)"
+              },
+              {
+                "type": "assign (psh) (psh)"
+              }
+            ],
+            "internal": false
+          }
+        ]
+      }
+    },
+    "TIMEOUT ENDING": {
+      "entry": [
+        {
+          "type": "set (TIMEOUT) (event)"
+        },
+        {
+          "type": "set (NULL) (NULL)"
+        },
+        {
+          "type": "return_values (event NULL NULL)"
+        }
+      ]
+    },
+    "HANDLING_PSH": {
+      "entry": [
+        {
+          "type": "get_first_element (queue) (client_pkt)"
+        },
+        {
+          "type": "get_IP_src (client_pkt) (client_ip)"
+        },
+        {
+          "type": "set_IP_dst (pkt client_ip) (pkt)"
+        },
+        {
+          "type": "get_TCP_sport (client_pkt) (client_port)"
+        },
+        {
+          "type": "set_TCP_dport (pkt client_port) (pkt)"
+        },
+        {
+          "type": "set_TCP_automatic_packet_seq (pkt) (pkt)"
+        },
+        {
+          "type": "set_TCP_automatic_packet_ack (pkt queue) (pkt)"
+        },
+        {
+          "type": "set_TCP_flags (pkt psh/ack) (pkt)"
+        },
+        {
+          "type": "pop (queue)"
+        },
+        {
+          "type": "send (pkt)"
+        }
+      ],
+      "on": {
+        "PACKET_SENT": [
+          {
+            "target": "LISTENING",
+            "actions": [
+              {
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              },
+              {
+                "type": "assign (ack) (ack)"
+              },
+              {
+                "type": "assign (psh/ack) (psh/ack)"
+              },
+              {
+                "type": "assign (psh) (psh)"
+              }
+            ],
+            "internal": false
+          }
+        ]
+      }
+    },
+    "HANDLING_ACK": {
+      "entry": [
+        {
+          "type": "pop (queue)"
+        },
+        {
+          "type": "done"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "ENDING",
+            "actions": [
+              {
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              }
+            ],
+            "internal": false
+          }
+        ]
+      }
+    },
+    "HANDLING_PSH_ACK": {
+      "entry": [
+        {
+          "type": "set_TCP_automatic_packet_seq (pkt) (pkt)"
+        },
+        {
+          "type": "set_TCP_automatic_packet_ack (pkt queue) (pkt)"
+        },
+        {
+          "type": "set_TCP_flags (pkt ack) (pkt)"
+        },
+        {
+          "type": "remove_TCP_payload (pkt) (pkt)"
+        },
+        {
+          "type": "pop (queue)"
+        },
+        {
+          "type": "send (pkt)"
+        }
+      ],
+      "on": {
+        "PACKET_SENT": [
+          {
+            "target": "ENDING",
+            "actions": [
+              {
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              }
+            ],
+            "internal": false
+          }
+        ]
+      }
+    },
+    "ENDING": {
+      "entry": [
+        {
+          "type": "set (DONE) (event)"
+        },
+        {
+          "type": "return_values (event pkt queue)"
+        }
+      ]
+    }
+  }
+}

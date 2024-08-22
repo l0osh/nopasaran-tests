@@ -1,0 +1,204 @@
+{
+  "id": "TCP_EXCHANGE",
+  "initial": "INITIALIZING",
+  "states": {
+    "INITIALIZING": {
+      "on": {
+        "STARTED": [
+          {
+            "target": "LOADING_VARIABLES",
+            "actions": [],
+            "meta": {}
+          }
+        ]
+      }
+    },
+    "LOADING_VARIABLES": {
+      "entry": [
+        {
+          "type": "get_parameters (ctrl pkt queue)"
+        },
+        {
+          "type": "done"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "HANDLING_THREE_WAY_HANDSHAKE",
+            "actions": [
+              {
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              },
+              {
+                "type": "assign (ctrl) (ctrl)"
+              }
+            ],
+            "internal": false
+          }
+        ]
+      }
+    },
+    "HANDLING_THREE_WAY_HANDSHAKE": {
+      "entry": [
+        {
+          "type": "call (THREE_WAY_HANDSHAKE ctrl pkt queue) (event pkt queue)"
+        },
+        {
+          "type": "trigger (event)"
+        }
+      ],
+      "on": {
+        "TIMEOUT": [
+          {
+            "target": "TIMEOUT_ENDING",
+            "actions": []
+          }
+        ],
+        "DONE": [
+          {
+            "target": "SENDING_TCP_DATA",
+            "actions": [
+              {
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              },
+              {
+                "type": "assign (ctrl) (ctrl)"
+              }
+            ],
+            "internal": false
+          }
+        ]
+      }
+    },
+    "TIMEOUT_ENDING": {
+      "entry": [
+        {
+          "type": "set (TIMEOUT) (event)"
+        },
+        {
+          "type": "set (NULL) (dict)"
+        },
+        {
+          "type": "return_values (event dict dict)"
+        }
+      ]
+    },
+    "SENDING_TCP_DATA": {
+      "entry": [
+        {
+          "type": "call (SEND_TCP_DATA ctrl pkt queue) (event pkt queue)"
+        },
+        {
+          "type": "trigger (event)"
+        }
+      ],
+      "on": {
+        "TIMEOUT": [
+          {
+            "target": "TIMEOUT_ENDING",
+            "actions": []
+          }
+        ],
+        "DONE": [
+          {
+            "target": "CLOSING_CONNECTION",
+            "actions": [
+              {
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              },
+              {
+                "type": "assign (ctrl) (ctrl)"
+              }
+            ],
+            "internal": false
+          }
+        ]
+      }
+    },
+    "CLOSING_CONNECTION": {
+      "entry": [
+        {
+          "type": "call (CLOSE_TCP_CONNECTION ctrl pkt queue) (event pkt queue)"
+        },
+        {
+          "type": "trigger (event)"
+        }
+      ],
+      "on": {
+        "TIMEOUT": [
+          {
+            "target": "TIMEOUT_ENDING",
+            "actions": []
+          }
+        ],
+        "DONE": [
+          {
+            "target": "EXCHANGING_SYNC",
+            "actions": [
+              {
+                "type": "assign (ctrl) (ctrl)"
+              },
+              {
+                "type": "assign (pkt) (pkt)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "EXCHANGING_SYNC": {
+      "entry": [
+        {
+          "type": "call (GET_SEQ_NUMBERS pkt) (dict)"
+        },
+        {
+          "type": "call (EXCHANGE_SYNC ctrl dict) (event sync_dict)"
+        },
+        {
+          "type": "trigger (event)"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "SUCCESS_ENDING",
+            "actions": [
+              {
+                "type": "assign (dict) (dict)"
+              },
+              {
+                "type": "assign (sync_dict) (sync_dict)"
+              }
+            ]
+          }
+        ],
+        "TIMEOUT": [
+          {
+            "target": "TIMEOUT_ENDING",
+            "actions": []
+          }
+        ]
+      }
+    },
+    "SUCCESS_ENDING": {
+      "entry": [
+        {
+          "type": "set (DONE) (event)"
+        },
+        {
+          "type": "return_values (event dict sync_dict)"
+        }
+      ]
+    }
+  }
+}

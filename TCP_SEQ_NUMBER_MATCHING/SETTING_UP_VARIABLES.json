@@ -1,0 +1,167 @@
+{
+  "id": "SETTING_UP_VARIABLES",
+  "initial": "INITIALIZING",
+  "states": {
+    "INITIALIZING": {
+      "on": {
+        "STARTED": [
+          {
+            "target": "LOADING_FILE",
+            "actions": [],
+            "internal": false
+          }
+        ]
+      }
+    },
+    "LOADING_FILE": {
+      "entry": [
+        {
+          "type": "get_from_file (variables role) (role)"
+        },
+        {
+          "type": "get_from_file (variables client) (client)"
+        },
+        {
+          "type": "get_from_file (variables server) (server)"
+        },
+        {
+          "type": "get_from_file (variables port) (port)"
+        },
+        {
+          "type": "get_from_file (variables ip) (ip)"
+        },
+        {
+          "type": "get_from_file (variables filter) (filter)"
+        },
+        {
+          "type": "packet_filter (filter)"
+        },
+        {
+          "type": "done"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "CREATING_PACKET_CLIENT",
+            "cond": "equal (role client)",
+            "actions": [
+              {
+                "type": "assign (ip) (ip)"
+              },
+              {
+                "type": "assign (port) (server_port)"
+              }
+            ],
+            "internal": false
+          },
+          {
+            "target": "CREATING_PACKET_SERVER",
+            "cond": "equal (role server)",
+            "actions": [
+              {
+                "type": "assign (port) (port)"
+              }
+            ],
+            "internal": false
+          }
+        ]
+      }
+    },
+    "CREATING_PACKET_CLIENT": {
+      "entry": [
+        {
+          "type": "create_TCP_packet (pkt)"
+        },
+        {
+          "type": "set_random_int (100000 200000) (client_seq)"
+        },
+        {
+          "type": "set_random_int (10000 20000) (client_port)"
+        },
+        {
+          "type": "set_IP_dst (pkt ip) (pkt)"
+        },
+        {
+          "type": "set_TCP_sport (pkt client_port) (pkt)"
+        },
+        {
+          "type": "set_TCP_dport (pkt server_port) (pkt)"
+        },
+        {
+          "type": "set_TCP_seq (pkt client_seq) (pkt)"
+        },
+        {
+          "type": "listen (queue)"
+        },
+        {
+          "type": "done"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "ENDING",
+            "actions": [
+              {
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              }
+            ],
+            "internal": false
+          }
+        ]
+      }
+    },
+    "CREATING_PACKET_SERVER": {
+      "entry": [
+        {
+          "type": "create_TCP_packet (pkt)"
+        },
+        {
+          "type": "set_random_int (100000 200000) (server_seq)"
+        },
+        {
+          "type": "set_TCP_sport (pkt port) (pkt)"
+        },
+        {
+          "type": "set_TCP_seq (pkt server_seq) (pkt)"
+        },
+        {
+          "type": "listen (queue)"
+        },
+        {
+          "type": "done"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "ENDING",
+            "actions": [
+              {
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              }
+            ],
+            "internal": false
+          }
+        ]
+      }
+    },
+    "ENDING": {
+      "entry": [
+        {
+          "type": "set (DONE) (event)"
+        },
+        {
+          "type": "return_values (event pkt queue)"
+        }
+      ]
+    }
+  }
+}
