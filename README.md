@@ -1,6 +1,6 @@
 # Tests
 
-This repository contains unit tests designed to be executed within the nopasaran framework by workers. Each test is organized into its own folder, containing the necessary JSON files that define the test structure and logic.
+This repository constitutes an **open library** of reviewed tests designed to be executed within the nopasaran framework by workers. Each test is organized into its own folder, containing the necessary JSON files that define the test structure and logic.
 
 ## Structure of Test Folders
 
