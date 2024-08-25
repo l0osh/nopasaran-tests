@@ -17,18 +17,17 @@ The test relies on a set of variables to configure the client-server communicati
   "ip": "TO_DO",
   "port": "TO_DO",
   "request-data": {
+    "host": "TO_DO",
+    "method": "TO_DO",
+    "path": "TO_DO",
     "headers": [
       ["TO_DO", "TO_DO"],
     ],
-    ":method": "TO_DO",
-    ":path": "TO_DO",
-    ":scheme": "TO_DO",
-    ":authority": "TO_DO",
-    "body": "TO_DO"
+      "body": "TO_DO"
   },
   "response-data": {
-    "path": "TO_DO",
     "method": "TO_DO",
+    "path": "TO_DO",
     "status_code": "TO_DO",
     "headers": [
       ["TO_DO", "TO_DO"],
@@ -89,9 +88,9 @@ The test relies on a set of variables to configure the client-server communicati
     "body": "TO_DO"
   },
   "response-data": {
-    "path": "TO_DO",
-    "method": "TO_DO",
-    "status_code": "TO_DO",
+    ":path": "TO_DO",
+    ":method": "TO_DO",
+    ":status": "TO_DO",
     "headers": [
       ["TO_DO", "TO_DO"],
     ],
