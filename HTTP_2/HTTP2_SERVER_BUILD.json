@@ -1,0 +1,54 @@
+{
+    "id": "HTTP2_SERVER_BUILD",
+    "initial": "INIT",
+    "states": {
+      "INIT": {
+        "on": {
+          "STARTED": [
+            {
+              "target": "BUILDING_RESPONSE",
+              "actions": []
+            }
+          ]
+        }
+      },
+      "BUILDING_RESPONSE": {
+        "entry": [
+          {
+            "type": "get_from_file (variables response-data) (response-data)"
+          },
+          {
+            "type": "create_http_2_server (server)"
+          },
+          {
+            "type": "add_http_2_route (server response-data)"
+          },
+          {
+            "type": "done"
+          }
+        ],
+        "on": {
+          "DONE": [
+            {
+              "target": "BUILDING_DONE",
+              "actions": [
+                {
+                  "type": "assign (server) (server)"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "BUILDING_DONE": {
+        "entry": [
+          {
+            "type": "set (RESPONSE_BUILT) (event)"
+          },
+          {
+            "type": "return_values (event server)"
+          }
+        ]
+      }
+    }
+}
