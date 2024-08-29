@@ -1,27 +1,40 @@
 {
-  "id": "CONTROL_CHANNEL_SET_UP",
+  "id": "CLOSE_TCP_CONNECTION",
   "initial": "INITIALIZING",
   "states": {
     "INITIALIZING": {
       "on": {
         "STARTED": [
           {
-            "target": "LOADING THE VARIABLES",
-            "actions": []
+            "target": "LOADING_VARIABLES",
+            "actions": [],
+            "internal": false
           }
         ]
       }
     },
-    "LOADING THE VARIABLES": {
+    "LOADING_VARIABLES": {
       "entry": [
         {
-          "type": "get_parameters (role controller_conf_filename)"
+          "type": "get_from_file (variables role) (role)"
         },
         {
-          "type": "set (client) (client)"
+          "type": "get_from_file (variables client) (client)"
         },
         {
-          "type": "set (server) (server)"
+          "type": "get_from_file (variables server) (server)"
+        },
+        {
+          "type": "get_parameters (ctrl pkt queue)"
+        },
+        {
+          "type": "get_from_file (variables fin/ack) (fin/ack)"
+        },
+        {
+          "type": "get_from_file (variables ack) (ack)"
+        },
+        {
+          "type": "get_from_file (variables fin) (fin)"
         },
         {
           "type": "done"
@@ -30,116 +43,223 @@
       "on": {
         "DONE": [
           {
-            "target": "STARTING CLIENT CONTROL CHANNEL",
+            "target": "SENDING FIN",
             "cond": "equal (role client)",
             "actions": [
               {
-                "type": "assign (controller_conf_filename) (controller_conf_filename)"
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              },
+              {
+                "type": "assign (ack) (ack)"
+              },
+              {
+                "type": "assign (fin/ack) (fin/ack)"
+              },
+              {
+                "type": "assign (fin) (fin)"
               }
-            ]
+            ],
+            "internal": false
           },
           {
-            "target": "STARTING SERVER CONTROL CHANNEL",
+            "target": "LISTENING",
             "cond": "equal (role server)",
             "actions": [
               {
-                "type": "assign (controller_conf_filename) (controller_conf_filename)"
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              },
+              {
+                "type": "assign (ack) (ack)"
+              },
+              {
+                "type": "assign (fin/ack) (fin/ack)"
+              },
+              {
+                "type": "assign (fin) (fin)"
               }
-            ]
-          }
-        ]
-      }
-    },
-    "STARTING CLIENT CONTROL CHANNEL": {
-      "entry": [
-        {
-          "type": "load_control_channel_configuration (controller_conf_filename) (controller_conf)"
-        },
-        {
-          "type": "configure_client_control_channel (controller_conf) (controller controller_protocol)"
-        },
-        {
-          "type": "set (20) (waiting_time)"
-        },
-        {
-          "type": "wait (waiting_time)"
-        },
-        {
-          "type": "start_control_channel (controller)"
-        },
-        {
-          "type": "done"
-        }
-      ],
-      "on": {
-        "DONE": [
+            ],
+            "internal": false
+          },
           {
-            "target": "SYNCHRONIZATION OF THE TWO PARTIES",
+            "target": "LOADING_VARIABLES",
             "actions": [
               {
-                "type": "assign (controller_protocol) (controller_protocol)"
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              },
+              {
+                "type": "assign (ctrl) (ctrl)"
               }
-            ]
+            ],
+            "internal": false
           }
         ]
       }
     },
-    "STARTING SERVER CONTROL CHANNEL": {
+    "SENDING FIN": {
       "entry": [
         {
-          "type": "load_control_channel_configuration (controller_conf_filename) (controller_conf)"
+          "type": "set_TCP_flags (pkt fin) (pkt)"
         },
         {
-          "type": "configure_server_control_channel (controller_conf) (controller controller_protocol)"
-        },
-        {
-          "type": "start_control_channel (controller)"
-        },
-        {
-          "type": "done"
+          "type": "send (pkt)"
         }
       ],
       "on": {
-        "DONE": [
+        "PACKET_SENT": [
           {
-            "target": "SYNCHRONIZATION OF THE TWO PARTIES",
+            "target": "LISTENING",
             "actions": [
               {
-                "type": "assign (controller_protocol) (controller_protocol)"
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              },
+              {
+                "type": "assign (ack) (ack)"
+              },
+              {
+                "type": "assign (fin/ack) (fin/ack)"
+              },
+              {
+                "type": "assign (fin) (fin)"
               }
-            ]
+            ],
+            "internal": false
           }
         ]
       }
     },
-    "SYNCHRONIZATION OF THE TWO PARTIES": {
+    "LISTENING": {
       "entry": [
         {
-          "type": "set (60) (timeout)"
+          "type": "set (5) (timeout)"
         },
         {
-          "type": "wait_ready_signal (controller_protocol timeout)"
+          "type": "wait_packet_signal (queue timeout)"
         }
       ],
       "on": {
+        "PACKET_AVAILABLE": [
+          {
+            "target": "GETTING_FLAGS",
+            "actions": [
+              {
+                "type": "assign (queue) (queue)"
+              },
+              {
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (ack) (ack)"
+              },
+              {
+                "type": "assign (fin/ack) (fin/ack)"
+              },
+              {
+                "type": "assign (fin) (fin)"
+              }
+            ],
+            "internal": false
+          }
+        ],
         "TIMEOUT": [
           {
             "target": "TIMEOUT ENDING",
-            "actions": [
-              {
-                "type": "assign (controller_protocol) (controller_protocol)"
-              }
-            ]
+            "actions": [],
+            "internal": false
           }
-        ],
-        "READY": [
+        ]
+      }
+    },
+    "GETTING_FLAGS": {
+      "entry": [
+        {
+          "type": "get_TCP_flags (queue) (flags)"
+        },
+        {
+          "type": "set (TCP_PACKET_RECEIVED) (event)"
+        },
+        {
+          "type": "trigger (event)"
+        }
+      ],
+      "on": {
+        "TCP_PACKET_RECEIVED": [
           {
-            "target": "CONTROL CHANNEL IS READY",
+            "target": "HANDLING_FIN",
+            "cond": "equal (flags fin)",
             "actions": [
               {
-                "type": "assign (controller_protocol) (controller_protocol)"
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              },
+              {
+                "type": "assign (ack) (ack)"
+              },
+              {
+                "type": "assign (fin/ack) (fin/ack)"
+              },
+              {
+                "type": "assign (fin) (fin)"
               }
-            ]
+            ],
+            "internal": false
+          },
+          {
+            "target": "HANDLING_ACK",
+            "cond": "equal (flags ack)",
+            "actions": [
+              {
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              },
+              {
+                "type": "assign (ack) (ack)"
+              },
+              {
+                "type": "assign (fin/ack) (fin/ack)"
+              },
+              {
+                "type": "assign (fin) (fin)"
+              }
+            ],
+            "internal": false
+          },
+          {
+            "target": "HANDLING_FIN_ACK",
+            "cond": "equal (flags fin/ack)",
+            "actions": [
+              {
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              },
+              {
+                "type": "assign (ack) (ack)"
+              },
+              {
+                "type": "assign (fin/ack) (fin/ack)"
+              },
+              {
+                "type": "assign (fin) (fin)"
+              }
+            ],
+            "internal": false
           }
         ]
       }
@@ -150,17 +270,140 @@
           "type": "set (TIMEOUT) (event)"
         },
         {
-          "type": "return_values (event controller_protocol)"
+          "type": "set (NULL) (NULL)"
+        },
+        {
+          "type": "return_values (event NULL NULL)"
         }
       ]
     },
-    "CONTROL CHANNEL IS READY": {
+    "HANDLING_FIN": {
       "entry": [
         {
-          "type": "set (CONTROL_CHANNEL_READY) (event)"
+          "type": "get_first_element (queue) (client_pkt)"
         },
         {
-          "type": "return_values (event controller_protocol)"
+          "type": "get_IP_src (client_pkt) (client_ip)"
+        },
+        {
+          "type": "set_IP_dst (pkt client_ip) (pkt)"
+        },
+        {
+          "type": "get_TCP_sport (client_pkt) (client_port)"
+        },
+        {
+          "type": "set_TCP_dport (pkt client_port) (pkt)"
+        },
+        {
+          "type": "set_TCP_automatic_packet_seq (pkt) (pkt)"
+        },
+        {
+          "type": "set_TCP_automatic_packet_ack (pkt queue) (pkt)"
+        },
+        {
+          "type": "set_TCP_flags (pkt fin/ack) (pkt)"
+        },
+        {
+          "type": "pop (queue)"
+        },
+        {
+          "type": "send (pkt)"
+        }
+      ],
+      "on": {
+        "PACKET_SENT": [
+          {
+            "target": "LISTENING",
+            "actions": [
+              {
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              },
+              {
+                "type": "assign (ack) (ack)"
+              },
+              {
+                "type": "assign (fin/ack) (fin/ack)"
+              },
+              {
+                "type": "assign (fin) (fin)"
+              }
+            ],
+            "internal": false
+          }
+        ]
+      }
+    },
+    "HANDLING_ACK": {
+      "entry": [
+        {
+          "type": "pop (queue)"
+        },
+        {
+          "type": "done"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "ENDING",
+            "actions": [
+              {
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              }
+            ],
+            "internal": false
+          }
+        ]
+      }
+    },
+    "HANDLING_FIN_ACK": {
+      "entry": [
+        {
+          "type": "set_TCP_automatic_packet_seq (pkt) (pkt)"
+        },
+        {
+          "type": "set_TCP_automatic_packet_ack (pkt queue) (pkt)"
+        },
+        {
+          "type": "set_TCP_flags (pkt ack) (pkt)"
+        },
+        {
+          "type": "pop (queue)"
+        },
+        {
+          "type": "send (pkt)"
+        }
+      ],
+      "on": {
+        "PACKET_SENT": [
+          {
+            "target": "ENDING",
+            "actions": [
+              {
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              }
+            ],
+            "internal": false
+          }
+        ]
+      }
+    },
+    "ENDING": {
+      "entry": [
+        {
+          "type": "set (DONE) (event)"
+        },
+        {
+          "type": "return_values (event pkt queue)"
         }
       ]
     }

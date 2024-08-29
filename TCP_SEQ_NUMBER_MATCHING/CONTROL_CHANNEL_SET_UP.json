@@ -59,6 +59,12 @@
           "type": "configure_client_control_channel (controller_conf) (controller controller_protocol)"
         },
         {
+          "type": "set (20) (waiting_time)"
+        },
+        {
+          "type": "wait (waiting_time)"
+        },
+        {
           "type": "start_control_channel (controller)"
         },
         {
@@ -109,7 +115,7 @@
     "SYNCHRONIZATION OF THE TWO PARTIES": {
       "entry": [
         {
-          "type": "set (10) (timeout)"
+          "type": "set (60) (timeout)"
         },
         {
           "type": "wait_ready_signal (controller_protocol timeout)"
