@@ -54,19 +54,20 @@
       "on": {
         "TIMEOUT": [
           {
-            "target": "TIMEOUT_ENDING",
-            "actions": []
+            "target": "3WHS_TIMEOUT",
+            "actions": [
+              {
+                "type": "assign (ctrl) (ctrl)"
+              }
+            ]
           }
         ],
         "DONE": [
           {
-            "target": "SENDING_TCP_DATA",
+            "target": "3WHS_SUCCESS",
             "actions": [
               {
                 "type": "assign (pkt) (pkt)"
-              },
-              {
-                "type": "assign (queue) (queue)"
               },
               {
                 "type": "assign (ctrl) (ctrl)"
@@ -77,79 +78,62 @@
         ]
       }
     },
-    "TIMEOUT_ENDING": {
+    "3WHS_TIMEOUT": {
       "entry": [
         {
-          "type": "set (TIMEOUT) (event)"
+          "type": "set (NULL) (seq)"
         },
         {
-          "type": "set (NULL) (dict)"
+          "type": "set (NULL) (ack)"
         },
         {
-          "type": "return_values (event dict dict)"
-        }
-      ]
-    },
-    "SENDING_TCP_DATA": {
-      "entry": [
-        {
-          "type": "call (SEND_TCP_DATA ctrl pkt queue) (event pkt queue)"
+          "type": "create_dict (dict)"
         },
         {
-          "type": "trigger (event)"
-        }
-      ],
-      "on": {
-        "TIMEOUT": [
-          {
-            "target": "TIMEOUT_ENDING",
-            "actions": []
-          }
-        ],
-        "DONE": [
-          {
-            "target": "CLOSING_CONNECTION",
-            "actions": [
-              {
-                "type": "assign (pkt) (pkt)"
-              },
-              {
-                "type": "assign (queue) (queue)"
-              },
-              {
-                "type": "assign (ctrl) (ctrl)"
-              }
-            ],
-            "internal": false
-          }
-        ]
-      }
-    },
-    "CLOSING_CONNECTION": {
-      "entry": [
-        {
-          "type": "call (CLOSE_TCP_CONNECTION ctrl pkt queue) (event pkt queue)"
+          "type": "add_element_to_dict (dict seq) (dict)"
         },
         {
-          "type": "trigger (event)"
+          "type": "add_element_to_dict (dict ack) (dict)"
+        },
+        {
+          "type": "done"
         }
       ],
       "on": {
-        "TIMEOUT": [
-          {
-            "target": "TIMEOUT_ENDING",
-            "actions": []
-          }
-        ],
         "DONE": [
           {
             "target": "EXCHANGING_SYNC",
             "actions": [
               {
-                "type": "assign (ctrl) (ctrl)"
+                "type": "assign (dict) (dict)"
               },
               {
-                "type": "assign (pkt) (pkt)"
+                "type": "assign (ctrl) (ctrl)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "3WHS_SUCCESS": {
+      "entry": [
+        {
+          "type": "call (GET_SEQ_NUMBERS pkt) (dict)"
+        },
+        {
+          "type": "done"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "EXCHANGING_SYNC",
+            "actions": [
+              {
+                "type": "assign (dict) (dict)"
+              },
+              {
+                "type": "assign (ctrl) (ctrl)"
               }
             ]
           }
@@ -158,9 +142,6 @@
     },
     "EXCHANGING_SYNC": {
       "entry": [
-        {
-          "type": "call (GET_SEQ_NUMBERS pkt) (dict)"
-        },
         {
           "type": "call (EXCHANGE_SYNC ctrl dict) (event sync_dict)"
         },
@@ -184,7 +165,7 @@
         ],
         "TIMEOUT": [
           {
-            "target": "TIMEOUT_ENDING",
+            "target": "SYNC_TIMEOUT_ENDING",
             "actions": []
           }
         ]
@@ -197,6 +178,19 @@
         },
         {
           "type": "return_values (event dict sync_dict)"
+        }
+      ]
+    },
+    "SYNC_TIMEOUT_ENDING": {
+      "entry": [
+        {
+          "type": "set (TIMEOUT) (event)"
+        },
+        {
+          "type": "set (NULL) (dict)"
+        },
+        {
+          "type": "return_values (event dict dict)"
         }
       ]
     }

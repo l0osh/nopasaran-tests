@@ -17,12 +17,7 @@ The test relies on a set of variables to configure the client-server communicati
   "filter": "tcp port TO_DO",
   "syn": "S",
   "ack": "A",
-  "syn/ack": "SA",
-  "fin": "F",
-  "fin/ack": "FA",
-  "psh": "P",
-  "psh/ack": "PA",
-  "data": "TO_DO"
+  "syn/ack": "SA"
 }
 ```
 
@@ -48,12 +43,3 @@ The test relies on a set of variables to configure the client-server communicati
 
 - **syn/ack**: Represents a TCP packet with both the SYN and ACK flags set, typically sent by the server in response to a SYN packet from the client.
 
-- **fin**: Represents the FIN (finish) flag in a TCP packet, used to gracefully close a TCP connection.
-
-- **fin/ack**: Represents a TCP packet with both the FIN and ACK flags set, used to acknowledge the termination of a connection.
-
-- **psh**: Represents the PSH (push) flag in a TCP packet, indicating that the data should be immediately pushed to the receiving application.
-
-- **psh/ack**: Represents a TCP packet with both the PSH and ACK flags set, used when sending data along with an acknowledgment.
-
-- **data**: The data that the client sends to the server. Replace `TO_DO` with the actual data content based on the specific requirements of the test.
