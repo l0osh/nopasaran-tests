@@ -142,7 +142,7 @@
     "LISTENING": {
       "entry": [
         {
-          "type": "set (5) (timeout)"
+          "type": "set (15) (timeout)"
         },
         {
           "type": "wait_packet_signal (queue timeout)"
