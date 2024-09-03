@@ -112,7 +112,14 @@
         "TIMEOUT": [
           {
             "target": "ENDING",
-            "actions": []
+            "actions": [
+              {
+                "type": "assign (dict) (dict)"
+              },
+              {
+                "type": "assign (sync_dict) (sync_dict)"
+              }
+            ]
           }
         ]
       }
