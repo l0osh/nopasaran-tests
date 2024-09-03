@@ -108,6 +108,12 @@
             ],
             "internal": false
           }
+        ],
+        "TIMEOUT": [
+          {
+            "target": "ENDING",
+            "actions": []
+          }
         ]
       }
     },
