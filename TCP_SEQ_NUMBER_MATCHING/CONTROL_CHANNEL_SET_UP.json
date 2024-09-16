@@ -22,6 +22,9 @@
         },
         {
           "type": "set (server) (server)"
+        },
+        {
+          "type": "done"
         }
       ],
       "on": {
