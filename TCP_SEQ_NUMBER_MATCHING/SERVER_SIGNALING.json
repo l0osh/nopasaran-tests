@@ -15,7 +15,7 @@
     "GET_PARAMETERS": {
       "entry": [
         {
-          "type": "get_parameters (signal_type) (signal_type)"
+          "type": "get_parameters (signal_type)"
         },
         {
           "type": "get_from_file (variables signaling-server) (server)"
