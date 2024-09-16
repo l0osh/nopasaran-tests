@@ -22,9 +22,6 @@
         },
         {
           "type": "set (server) (server)"
-        },
-        {
-          "type": "call (SERVER_SIGNALING)"
         }
       ],
       "on": {
