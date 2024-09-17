@@ -160,6 +160,15 @@
         },
         {
           "type": "start_control_channel (controller)"
+        },
+        {
+          "type": "set (listening) (signal_type)"
+        },
+        {
+          "type": "call (SERVER_SIGNALING signal_type) (event)"
+        },
+        {
+          "type": "trigger (event)"
         }
       ],
       "on": {
