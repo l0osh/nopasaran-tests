@@ -30,7 +30,7 @@
       "on": {
         "DONE": [
           {
-            "target": "STARTING CLIENT CONTROL CHANNEL",
+            "target": "SETTING READY CONNECTION",
             "cond": "equal (role client)",
             "actions": [
               {
@@ -39,13 +39,75 @@
             ]
           },
           {
-            "target": "STARTING SERVER CONTROL CHANNEL",
+            "target": "SETTING READY LISTEN",
             "cond": "equal (role server)",
             "actions": [
               {
                 "type": "assign (controller_conf_filename) (controller_conf_filename)"
               }
             ]
+          }
+        ]
+      }
+    },
+    "SETTING READY CONNECTION": {
+      "entry": [
+        {
+          "type": "set (ready_connection) (signal_type)"
+        },
+        {
+          "type": "call (SERVER_SIGNALING signal_type) (event)"
+        },
+        {
+          "type": "trigger (event)"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "STARTING CLIENT CONTROL CHANNEL",
+            "actions": [
+              {
+                "type": "assign (controller_conf_filename) (controller_conf_filename)"
+              }
+            ]
+          }
+        ],
+        "TIMEOUT": [
+          {
+            "target": "TIMEOUT ENDING",
+            "actions": []
+          }
+        ]
+      }
+    },
+    "SETTING READY LISTEN": {
+      "entry": [
+        {
+          "type": "set (ready_listen) (signal_type)"
+        },
+        {
+          "type": "call (SERVER_SIGNALING signal_type) (event)"
+        },
+        {
+          "type": "trigger (event)"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "STARTING SERVER CONTROL CHANNEL",
+            "actions": [
+              {
+                "type": "assign (controller_conf_filename) (controller_conf_filename)"
+              }
+            ]
+          }
+        ],
+        "TIMEOUT": [
+          {
+            "target": "TIMEOUT ENDING",
+            "actions": []
           }
         ]
       }
@@ -57,12 +119,6 @@
         },
         {
           "type": "configure_client_control_channel (controller_conf) (controller controller_protocol)"
-        },
-        {
-          "type": "set (2) (waiting_time)"
-        },
-        {
-          "type": "wait (waiting_time)"
         },
         {
           "type": "start_control_channel (controller)"
@@ -84,6 +140,16 @@
         ]
       }
     },
+    "TIMEOUT ENDING": {
+      "entry": [
+        {
+          "type": "set (TIMEOUT) (event)"
+        },
+        {
+          "type": "return_values (event controller_protocol)"
+        }
+      ]
+    },
     "STARTING SERVER CONTROL CHANNEL": {
       "entry": [
         {
@@ -96,7 +162,13 @@
           "type": "start_control_channel (controller)"
         },
         {
-          "type": "done"
+          "type": "set (listening) (signal_type)"
+        },
+        {
+          "type": "call (SERVER_SIGNALING signal_type) (event)"
+        },
+        {
+          "type": "trigger (event)"
         }
       ],
       "on": {
@@ -143,16 +215,6 @@
           }
         ]
       }
-    },
-    "TIMEOUT ENDING": {
-      "entry": [
-        {
-          "type": "set (TIMEOUT) (event)"
-        },
-        {
-          "type": "return_values (event controller_protocol)"
-        }
-      ]
     },
     "CONTROL CHANNEL IS READY": {
       "entry": [
