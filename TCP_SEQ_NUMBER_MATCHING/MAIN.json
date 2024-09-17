@@ -91,9 +91,14 @@
       }
     },
     "EXCHANGING_TCP_DATA": {
-      "entry": {
-        "type": "call (TCP_EXCHANGE ctrl pkt queue) (event dict sync_dict)"
-      },
+      "entry": [
+        {
+          "type": "call (TCP_EXCHANGE ctrl pkt queue) (event dict sync_dict)"
+        },
+        {
+          "type": "trigger (event)"
+        }
+      ],
       "on": {
         "DONE": [
           {
@@ -130,7 +135,7 @@
           "type": "set (ready_stop) (signal_type)"
         },
         {
-          "type": "call (SERVER_SIGNALING signal_type) (signaling-event)"
+          "type": "call (SERVER_SIGNALING signal_type) (event)"
         }
       ]
     }
