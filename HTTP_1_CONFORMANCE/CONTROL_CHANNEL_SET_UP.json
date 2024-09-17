@@ -146,6 +146,9 @@
           "type": "set (TIMEOUT) (event)"
         },
         {
+          "type": "set (NULL controller_protocol)"
+        },
+        {
           "type": "return_values (event controller_protocol)"
         }
       ]
