@@ -146,7 +146,7 @@
           "type": "set (TIMEOUT) (event)"
         },
         {
-          "type": "set (NULL controller_protocol)"
+          "type": "set (NULL) (controller_protocol)"
         },
         {
           "type": "return_values (event controller_protocol)"
@@ -190,7 +190,7 @@
     "SYNCHRONIZATION OF THE TWO PARTIES": {
       "entry": [
         {
-          "type": "set (10) (timeout)"
+          "type": "set (4) (timeout)"
         },
         {
           "type": "wait_ready_signal (controller_protocol timeout)"
