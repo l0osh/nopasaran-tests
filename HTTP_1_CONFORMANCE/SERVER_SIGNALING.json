@@ -1,0 +1,222 @@
+{
+  "id": "SERVER_SIGNALING",
+  "initial": "INITIALIZING",
+  "states": {
+    "INITIALIZING": {
+      "on": {
+        "STARTED": [
+          {
+            "target": "GET_PARAMETERS",
+            "actions": []
+          }
+        ]
+      }
+    },
+    "GET_PARAMETERS": {
+      "entry": [
+        {
+          "type": "get_parameters (signal_type)"
+        },
+        {
+          "type": "get_from_file (variables signaling-server) (server)"
+        },
+        {
+          "type": "get_from_file (variables signaling-port) (port)"
+        },
+        {
+          "type": "get_from_file (variables id) (id)"
+        },
+        {
+          "type": "set (4) (timeout)"
+        },
+        {
+          "type": "set (ready_connection) (ready_connection)"
+        },
+        {
+          "type": "set (ready_listen) (ready_listen)"
+        },
+        {
+          "type": "set (listening) (listening)"
+        },
+        {
+          "type": "set (ready_stop) (ready_stop)"
+        },
+        {
+          "type": "done"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "SIGNAL_READY_CONNECTION",
+            "cond": "equal (signal_type ready_connection)",
+            "actions": [
+              {
+                "type": "assign (server) (server)"
+              },
+              {
+                "type": "assign (port) (port)"
+              },
+              {
+                "type": "assign (id) (id)"
+              },
+              {
+                "type": "assign (timeout) (timeout)"
+              }
+            ]
+          },
+          {
+            "target": "SIGNAL_READY_LISTEN",
+            "cond": "equal (signal_type ready_listen)",
+            "actions": [
+              {
+                "type": "assign (server) (server)"
+              },
+              {
+                "type": "assign (port) (port)"
+              },
+              {
+                "type": "assign (id) (id)"
+              },
+              {
+                "type": "assign (timeout) (timeout)"
+              }
+            ]
+          },
+          {
+            "target": "SIGNAL_LISTENING",
+            "cond": "equal (signal_type listening)",
+            "actions": [
+              {
+                "type": "assign (server) (server)"
+              },
+              {
+                "type": "assign (port) (port)"
+              },
+              {
+                "type": "assign (id) (id)"
+              },
+              {
+                "type": "assign (timeout) (timeout)"
+              }
+            ]
+          },
+          {
+            "target": "SIGNAL_READY_STOP",
+            "cond": "equal (signal_type ready_stop)",
+            "actions": [
+              {
+                "type": "assign (server) (server)"
+              },
+              {
+                "type": "assign (port) (port)"
+              },
+              {
+                "type": "assign (id) (id)"
+              },
+              {
+                "type": "assign (timeout) (timeout)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "SIGNAL_READY_CONNECTION": {
+      "entry": {
+        "type": "signal_ready_connection (server port id timeout)"
+      },
+      "on": {
+        "TIMEOUT": [
+          {
+            "target": "TIMEOUT_ENDING",
+            "actions": []
+          }
+        ],
+        "SIGNAL_READY_CONNECTION": [
+          {
+            "target": "SUCCESS_ENDING",
+            "actions": []
+          }
+        ]
+      }
+    },
+    "SIGNAL_READY_LISTEN": {
+      "entry": {
+        "type": "signal_ready_listen (server port id timeout)"
+      },
+      "on": {
+        "TIMEOUT": [
+          {
+            "target": "TIMEOUT_ENDING",
+            "actions": []
+          }
+        ],
+        "SIGNAL_READY_LISTEN": [
+          {
+            "target": "SUCCESS_ENDING",
+            "actions": []
+          }
+        ]
+      }
+    },
+    "SIGNAL_LISTENING": {
+      "entry": {
+        "type": "signal_listening (server port id timeout)"
+      },
+      "on": {
+        "TIMEOUT": [
+          {
+            "target": "TIMEOUT_ENDING",
+            "actions": []
+          }
+        ],
+        "SIGNAL_LISTENING": [
+          {
+            "target": "SUCCESS_ENDING",
+            "actions": []
+          }
+        ]
+      }
+    },
+    "SIGNAL_READY_STOP": {
+      "entry": {
+        "type": "signal_ready_stop (server port id timeout)"
+      },
+      "on": {
+        "TIMEOUT": [
+          {
+            "target": "TIMEOUT_ENDING",
+            "actions": []
+          }
+        ],
+        "SIGNAL_READY_STOP": [
+          {
+            "target": "SUCCESS_ENDING",
+            "actions": []
+          }
+        ]
+      }
+    },
+    "TIMEOUT_ENDING": {
+      "entry": [
+        {
+          "type": "set (TIMEOUT) (event)"
+        },
+        {
+          "type": "return_values (event)"
+        }
+      ]
+    },
+    "SUCCESS_ENDING": {
+      "entry": [
+        {
+          "type": "set (DONE) (event)"
+        },
+        {
+          "type": "return_values (event)"
+        }
+      ]
+    }
+  }
+}
