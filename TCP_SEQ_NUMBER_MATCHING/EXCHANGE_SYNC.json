@@ -60,7 +60,7 @@
     "WAITING_FOR_SYNC": {
       "entry": [
         {
-          "type": "set (30) (timeout)"
+          "type": "set (4) (timeout)"
         },
         {
           "type": "wait_sync_signal (ctrl timeout) (remote_dict)"

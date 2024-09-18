@@ -61,12 +61,6 @@
     "BUILDING_HTTP2_REQUEST": {
       "entry": [
         {
-          "type": "set (1) (waiting_time)"
-        },
-        {
-          "type": "wait (waiting_time)"
-        },
-        {
           "type": "call (HTTP2_REQUEST_BUILD) (event request)"
         },
         {
