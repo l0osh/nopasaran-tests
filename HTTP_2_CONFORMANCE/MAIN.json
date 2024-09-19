@@ -154,9 +154,6 @@
           "type": "set (3) (timeout)"
         },
         {
-          "type": "free_socket (port)"
-        },
-        {
           "type": "wait_for_http_2_request (server port timeout) (request)"
         },
         {
