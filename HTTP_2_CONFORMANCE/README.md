@@ -12,27 +12,42 @@ The test relies on a set of variables to configure the client-server communicati
   "client": "client",
   "server": "server",
   "controller_conf_filename": "controller_configuration.json",
-  "ip": "TO_DO",
+  "host": "TO_DO",
   "port": "TO_DO",
-  "request-data": {
-    "headers": [
-      ["TO_DO", "TO_DO"],
-    ],
-    ":method": "TO_DO",
-    ":path": "TO_DO",
-    ":scheme": "http",
-    ":authority": "TO_DO",
-    "body": "TO_DO"
-  },
-  "response-data": {
-    ":path": "TO_DO",
-    ":method": "TO_DO",
-    ":status": "TO_DO",
-    "headers": [
-      ["TO_DO", "TO_DO"],
-    ],
-    "body": "TO_DO"
-  }
+  "tls_enabled": "TO_DO",
+  "protocol": "TO_DO",
+  "connection_settings_server": {"TO_DO": "TO_DO"},
+  "connection_settings_client": {"TO_DO": "TO_DO"},
+  "client_frames": [
+      {
+          "type": "TO_DO",
+          "tests": [
+              [
+                  {
+                      "function": "TO_DO",
+                      "params": [
+                          "TO_DO"
+                      ]
+                  }
+              ]
+          ]
+      }
+  ],
+  "server_frames": [
+      {
+          "type": "TO_DO",
+          "tests": [
+              [
+                  {
+                      "function": "TO_DO",
+                      "params": [
+                          "TO_DO"
+                      ]
+                  }
+              ]
+          ]
+      }
+  ]
 }
 ```
 
@@ -46,24 +61,22 @@ The test relies on a set of variables to configure the client-server communicati
 
 - **controller_conf_filename**: The name of the configuration file (in JSON format) that contains additional settings or parameters required for the control channel synchronizing the workers. The default filename is `controller_configuration.json`.
 
-- **ip**: The IP address of the server. This should be configured to match the server's actual IP address in the test environment. Replace `TO_DO` with the actual IP address.
+- **host**: The IP address of the server. This should be configured to match the server's actual IP address in the test environment. Replace `TO_DO` with the actual IP address.
 
 - **port**: The port number on which the server is listening for incoming TCP connections. This should be configured to match the server's actual port number in the test environment. Replace `TO_DO` with the actual port number.
 
-- **request-data**: A dictionary of fields that make up the HTTP request packet.
+- **tls_enabled**: Indicates whether TLS encryption is enabled for the server. Replace `TO_DO` with the actual value.
 
-- **:authority**: Specifies the hostname or IP address of the server to which the HTTP request is being sent. 
+- **protocol**: The protocol used for the HTTP communication. Replace `TO_DO` with the actual protocol.
 
-- **:path**: Defines the specific resource or endpoint on the server being requested.
+- **connection_settings_server**: A dictionary of fields change how the server will be configured.
 
-- **:scheme**: Specifies the protocol over which the request is made.
+- **connection_settings_client**: A dictionary of fields change how the client will be configured.
 
-- **:method**: Indicates the type of request being made.
+- **client_frames**: A list of frames that the client will send.
+  - **type**: The type of frame.
+  - **tests**: A list of tests that the client will perform.
+    - **function**: The function to be tested.
+    - **params**: The parameters to be passed to the function.
 
-- **body**: Contains the body of the HTTP request.
-
-- **headers**: Array of key-value pairs that represent the HTTP headers sent with the request.
-
-- **response-data**: Array of key-value pairs that represent the HTTP headers sent with the request.
-
-- **:status**: Represents the HTTP status code returned by the server in response to the request.
+- **server_frames**: A list of frames that the server will send.
