@@ -8,25 +8,25 @@ The test relies on a set of variables to configure the client-server communicati
 
 ```json
 {
-  "role": "TODO",
+  "role": "TO_DO",
   "client": "client",
   "server": "server",
   "controller_conf_filename": "controller_configuration.json",
-  "host": "TODO",
-  "port": "TODO",
-  "tls_enabled": "TODO",
-  "protocol": "TODO",
-  "connection_settings_server": {"TODO": "TODO"},
-  "connection_settings_client": {"TODO": "TODO"},
+  "host": "TO_DO",
+  "port": "TO_DO",
+  "tls_enabled": "TO_DO",
+  "protocol": "TO_DO",
+  "connection_settings_server": {"TO_DO": "TO_DO"},
+  "connection_settings_client": {"TO_DO": "TO_DO"},
   "client_frames": [
       {
-          "type": "TODO",
+          "type": "TO_DO",
           "tests": [
               [
                   {
-                      "function": "TODO",
+                      "function": "TO_DO",
                       "params": [
-                          "TODO"
+                          "TO_DO"
                       ]
                   }
               ]
@@ -35,13 +35,13 @@ The test relies on a set of variables to configure the client-server communicati
   ],
   "server_frames": [
       {
-          "type": "TODO",
+          "type": "TO_DO",
           "tests": [
               [
                   {
-                      "function": "TODO",
+                      "function": "TO_DO",
                       "params": [
-                          "TODO"
+                          "TO_DO"
                       ]
                   }
               ]
