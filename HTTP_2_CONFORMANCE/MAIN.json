@@ -435,6 +435,9 @@
               },
               {
                 "type": "assign (ctrl) (ctrl)"
+              },
+              {
+                "type": "assign (\"test_passed\") (result)"
               }
             ]
           }
@@ -448,6 +451,9 @@
               },
               {
                 "type": "assign (ctrl) (ctrl)"
+              },
+              {
+                "type": "assign (\"test_failed\") (result)"
               }
             ]
           }
@@ -470,13 +476,21 @@
         "TEST_PASSED": [
           {
             "target": "END",
-            "actions": []
+            "actions": [
+              {
+                "type": "assign (\"test_passed\") (result)"
+              }
+            ]
           }
         ],
         "TEST_FAILED": [
           {
             "target": "END",
-            "actions": []
+            "actions": [
+              {
+                "type": "assign (\"test_failed\") (result)"
+              }
+            ]
           }
         ]
       }
@@ -497,7 +511,11 @@
         "FRAMES_SENT": [
           {
             "target": "END",
-            "actions": []
+            "actions": [
+              {
+                "type": "assign (result) (result)"
+              }
+            ]
           }
         ]
       }
