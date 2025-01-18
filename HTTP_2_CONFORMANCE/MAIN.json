@@ -437,7 +437,7 @@
                 "type": "assign (ctrl) (ctrl)"
               },
               {
-                "type": "assign (\"test_passed\") (result)"
+                "type": "assign (event) (test_event)"
               }
             ]
           }
@@ -453,7 +453,7 @@
                 "type": "assign (ctrl) (ctrl)"
               },
               {
-                "type": "assign (\"test_failed\") (result)"
+                "type": "assign (event) (test_event)"
               }
             ]
           }
@@ -478,7 +478,7 @@
             "target": "END",
             "actions": [
               {
-                "type": "assign (\"test_passed\") (result)"
+                "type": "assign (event) (test_event)"
               }
             ]
           }
@@ -488,7 +488,7 @@
             "target": "END",
             "actions": [
               {
-                "type": "assign (\"test_failed\") (result)"
+                "type": "assign (event) (test_event)"
               }
             ]
           }
@@ -513,7 +513,7 @@
             "target": "END",
             "actions": [
               {
-                "type": "assign (result) (result)"
+                "type": "assign (test_event) (test_event)"
               }
             ]
           }
