@@ -153,10 +153,7 @@
     "WAITING_SERVER_PREFACE": {
       "entry": [
         {
-          "type": "wait_for_server_preface (client) (event)"
-        },
-        {
-          "type": "set (PREFACE_RECEIVED_AT_CLIENT) (msg)"
+          "type": "wait_for_server_preface (client) (event msg)"
         },
         {
           "type": "trigger (event)"
@@ -190,10 +187,7 @@
     "WAITING_CLIENT_PREFACE": {
       "entry": [
         {
-          "type": "wait_for_client_preface (server) (event)"
-        },
-        {
-          "type": "set (PREFACE_RECEIVED_AT_SERVER) (msg)"
+          "type": "wait_for_client_preface (server) (event msg)"
         },
         {
           "type": "trigger (event)"
@@ -276,10 +270,7 @@
     "WAITING_SERVER_ACK": {
       "entry": [
         {
-          "type": "wait_for_server_ack (client) (event)"
-        },
-        {
-          "type": "set (ACK_RECEIVED_AT_CLIENT) (msg)"
+          "type": "wait_for_server_ack (client) (event msg)"
         },
         {
           "type": "trigger (event)"
@@ -313,10 +304,7 @@
     "WAITING_CLIENT_ACK": {
       "entry": [
         {
-          "type": "wait_for_client_ack (server) (event)"
-        },
-        {
-          "type": "set (ACK_RECEIVED_AT_SERVER) (msg)"
+          "type": "wait_for_client_ack (server) (event msg)"
         },
         {
           "type": "trigger (event)"
@@ -393,6 +381,9 @@
           "type": "send_client_frames (client client_frames) (event)"
         },
         {
+          "type": "set (CLIENT_FRAMES_SENT) (msg)"
+        },
+        {
           "type": "trigger (event)"
         }
       ],
@@ -406,6 +397,9 @@
               },
               {
                 "type": "assign (ctrl) (ctrl)"
+              },
+              {
+                "type": "assign (msg) (msg)"
               }
             ]
           }
