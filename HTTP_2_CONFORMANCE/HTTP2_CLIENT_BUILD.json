@@ -53,7 +53,7 @@
           "type": "get_from_file (variables connection_settings_client) (connection_settings_client)"
         },
         {
-          "type": "start_http_2_client (client tls_enabled protocol connection_settings_client)"
+          "type": "start_http_2_client (client tls_enabled protocol connection_settings_client) (event msg)"
         },
         {
           "type": "done"
@@ -66,6 +66,12 @@
             "actions": [
               {
                 "type": "assign (client) (client)"
+              },
+              {
+                "type": "assign (event) (event)"
+              },
+              {
+                "type": "assign (msg) (msg)"
               }
             ]
           }
@@ -73,14 +79,9 @@
       }
     },
     "BUILDING_DONE": {
-      "entry": [
-        {
-          "type": "set (CLIENT_BUILT) (event)"
-        },
-        {
-          "type": "return_values (event client)"
-        }
-      ]
+      "entry": {
+        "type": "return_values (event client msg)"
+      }
     }
   }
 }
