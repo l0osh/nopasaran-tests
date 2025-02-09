@@ -225,6 +225,9 @@
               },
               {
                 "type": "assign (role) (role)"
+              },
+              {
+                "type": "assign (frames_received) (frames_received)"
               }
             ]
           }
@@ -277,7 +280,7 @@
     "EXCHANGING_SYNC_CLIENT_FRAMES_SENT": {
       "entry": [
         {
-          "type": "call (EXCHANGE_SYNC ctrl result) (event result_received)"
+          "type": "call (EXCHANGE_SYNC ctrl sync_client_frames_sent) (event sync_received_client_frames_sent)"
         },
         {
           "type": "trigger (event)"
@@ -323,6 +326,9 @@
               },
               {
                 "type": "assign (result) (result)"
+              },
+              {
+                "type": "assign (frames_received) (frames_received)"
               }
             ]
           }
@@ -360,6 +366,9 @@
               },
               {
                 "type": "assign (ctrl) (ctrl)"
+              },
+              {
+                "type": "assign (frames_received) (frames_received)"
               }
             ]
           }
@@ -397,6 +406,9 @@
               },
               {
                 "type": "assign (ctrl) (ctrl)"
+              },
+              {
+                "type": "assign (frames_received) (frames_received)"
               }
             ]
           }
@@ -406,7 +418,7 @@
     "EXCHANGING_SYNC_FINISHED": {
       "entry": [
         {
-          "type": "call (EXCHANGE_SYNC ctrl result) (event result_received)"
+          "type": "call (EXCHANGE_SYNC ctrl sync_server_frames_sent) (event sync_received_server_frames_sent)"
         },
         {
           "type": "trigger (event)"
@@ -426,6 +438,9 @@
               },
               {
                 "type": "assign (result_received) (result_received)"
+              },
+              {
+                "type": "assign (frames_received) (frames_received)"
               }
             ]
           },
@@ -440,6 +455,9 @@
               },
               {
                 "type": "assign (result_received) (result_received)"
+              },
+              {
+                "type": "assign (frames_received) (frames_received)"
               }
             ]
           }
@@ -465,6 +483,9 @@
               },
               {
                 "type": "assign (result_received) (server_result)"
+              },
+              {
+                "type": "assign (frames_received) (frames_received)"
               }
             ]
           }
@@ -478,6 +499,9 @@
               },
               {
                 "type": "assign (result_received) (server_result)"
+              },
+              {
+                "type": "assign (frames_received) (frames_received)"
               }
             ]
           }
@@ -503,6 +527,9 @@
               },
               {
                 "type": "assign (result_received) (client_result)"
+              },
+              {
+                "type": "assign (frames_received) (frames_received)"
               }
             ]
           }
@@ -516,6 +543,9 @@
               },
               {
                 "type": "assign (result_received) (client_result)"
+              },
+              {
+                "type": "assign (frames_received) (frames_received)"
               }
             ]
           }
