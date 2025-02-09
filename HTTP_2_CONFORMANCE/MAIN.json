@@ -280,7 +280,10 @@
     "EXCHANGING_SYNC_CLIENT_FRAMES_SENT": {
       "entry": [
         {
-          "type": "call (EXCHANGE_SYNC ctrl sync_client_frames_sent) (event sync_received_client_frames_sent)"
+          "type": "set (EXCHANGING_SYNC_CLIENT_FRAMES_SENT) (state)"
+        },
+        {
+          "type": "call (EXCHANGE_SYNC ctrl result) (event result_received)"
         },
         {
           "type": "trigger (event)"
@@ -350,7 +353,7 @@
       "on": {
         "TEST_COMPLETED": [
           {
-            "target": "EXCHANGING_SYNC_FINISHED",
+            "target": "EXCHANGING_SYNC_SERVER_FRAMES_SENT",
             "actions": [
               {
                 "type": "assign (result) (result)"
@@ -390,7 +393,7 @@
       "on": {
         "FRAMES_SENT": [
           {
-            "target": "EXCHANGING_SYNC_FINISHED",
+            "target": "EXCHANGING_SYNC_SERVER_FRAMES_SENT",
             "actions": [
               {
                 "type": "assign (result) (result)"
@@ -415,10 +418,13 @@
         ]
       }
     },
-    "EXCHANGING_SYNC_FINISHED": {
+    "EXCHANGING_SYNC_SERVER_FRAMES_SENT": {
       "entry": [
         {
-          "type": "call (EXCHANGE_SYNC ctrl sync_server_frames_sent) (event sync_received_server_frames_sent)"
+          "type": "set (EXCHANGING_SYNC_SERVER_FRAMES_SENT) (state)"
+        },
+        {
+          "type": "call (EXCHANGE_SYNC ctrl result) (event result_received)"
         },
         {
           "type": "trigger (event)"
