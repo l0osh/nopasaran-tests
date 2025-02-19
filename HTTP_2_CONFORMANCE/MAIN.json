@@ -153,7 +153,7 @@
     "WAITING_SERVER_PREFACE": {
       "entry": [
         {
-          "type": "wait_for_server_preface (client) (event msg)"
+          "type": "wait_for_server_preface (client) (event msg frames)"
         },
         {
           "type": "trigger (event)"
@@ -188,6 +188,9 @@
             "actions": [
               {
                 "type": "assign (msg) (msg)"
+              },
+              {
+                "type": "assign (frames) (frames)"
               }
             ]
           }
@@ -225,6 +228,19 @@
               },
               {
                 "type": "assign (role) (role)"
+              },
+              {
+                "type": "assign (frames_received) (frames_received)"
+              }
+            ]
+          }
+        ],
+        "CONNECTION_TERMINATED": [
+          {
+            "target": "FINAL",
+            "actions": [
+              {
+                "type": "assign (result) (server_result)"
               },
               {
                 "type": "assign (frames_received) (frames_received)"
@@ -341,6 +357,12 @@
               }
             ]
           }
+        ],
+        "TIMEOUT": [
+          {
+            "target": "CONTROL_CHANNEL_TIMEOUT_CLIENT_FRAMES_SENT",
+            "actions": []
+          }
         ]
       }
     },
@@ -430,6 +452,11 @@
         ]
       }
     },
+    "CONTROL_CHANNEL_TIMEOUT_CLIENT_FRAMES_SENT": {
+      "entry": {
+        "type": "set (Control_Channel_Timeout_After_Client_Frames_Sent) (result)"
+      }
+    },
     "EXCHANGING_SYNC_SERVER_FRAMES_SENT": {
       "entry": [
         {
@@ -484,6 +511,12 @@
                 "type": "assign (sent_frames) (sent_frames)"
               }
             ]
+          }
+        ],
+        "TIMEOUT": [
+          {
+            "target": "CONTROL_CHANNEL_TIMEOUT_SERVER_FRAMES_SENT",
+            "actions": []
           }
         ]
       }
@@ -586,6 +619,11 @@
             ]
           }
         ]
+      }
+    },
+    "CONTROL_CHANNEL_TIMEOUT_SERVER_FRAMES_SENT": {
+      "entry": {
+        "type": "set (Control_Channel_Timeout_After_Server_Frames_Sent) (result)"
       }
     },
     "WAITING_CLIENT_PREFACE": {
