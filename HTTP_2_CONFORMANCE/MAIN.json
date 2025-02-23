@@ -256,10 +256,7 @@
           "type": "get_from_file (variables client_frames) (client_frames)"
         },
         {
-          "type": "send_client_frames (client client_frames) (event sent_frames)"
-        },
-        {
-          "type": "set (CLIENT_FRAMES_SENT) (result)"
+          "type": "send_client_frames (client client_frames) (event sent_frames result)"
         },
         {
           "type": "trigger (event)"
@@ -295,6 +292,9 @@
           {
             "target": "FINAL",
             "actions": [
+              {
+                "type": "assign (result) (msg)"
+              },
               {
                 "type": "assign (sent_frames) (sent_frames)"
               }
@@ -370,8 +370,27 @@
         ],
         "TIMEOUT": [
           {
-            "target": "CONTROL_CHANNEL_TIMEOUT_CLIENT_FRAMES_SENT",
-            "actions": []
+            "target": "CONTROL_CHANNEL_TIMEOUT_CLIENT_FRAMES_SENT_CLIENT",
+            "cond": "equal (role client_val)",
+            "actions": [
+              {
+                "type": "assign (result) (result)"
+              },
+              {
+                "type": "assign (sent_frames) (sent_frames)"
+              }
+            ]
+          },
+          {
+            "target": "CONTROL_CHANNEL_TIMEOUT_CLIENT_FRAMES_SENT_SERVER",
+            "actions": [
+              {
+                "type": "assign (result) (result)"
+              },
+              {
+                "type": "assign (frames_received) (frames_received)"
+              }
+            ]
           }
         ]
       }
@@ -425,7 +444,7 @@
           "type": "get_from_file (variables server_frames) (server_frames)"
         },
         {
-          "type": "send_server_frames (server server_frames) (event sent_frames)"
+          "type": "send_server_frames (server server_frames) (event sent_frames msg)"
         },
         {
           "type": "trigger (event)"
@@ -465,16 +484,27 @@
             "target": "FINAL",
             "actions": [
               {
+                "type": "assign (msg) (msg)"
+              },
+              {
                 "type": "assign (sent_frames) (sent_frames)"
+              },
+              {
+                "type": "assign (frames_received) (frames_received)"
               }
             ]
           }
         ]
       }
     },
-    "CONTROL_CHANNEL_TIMEOUT_CLIENT_FRAMES_SENT": {
+    "CONTROL_CHANNEL_TIMEOUT_CLIENT_FRAMES_SENT_CLIENT": {
       "entry": {
-        "type": "set (Control_Channel_Timeout_After_Client_Frames_Sent) (result)"
+        "type": "set (Server_Failed_To_Start_or_Receive_All_Frames) (result)"
+      }
+    },
+    "CONTROL_CHANNEL_TIMEOUT_CLIENT_FRAMES_SENT_SERVER": {
+      "entry": {
+        "type": "set (Client_Received_Error_From_Proxy) (result)"
       }
     },
     "EXCHANGING_SYNC_SERVER_FRAMES_SENT": {
@@ -535,8 +565,33 @@
         ],
         "TIMEOUT": [
           {
-            "target": "CONTROL_CHANNEL_TIMEOUT_SERVER_FRAMES_SENT",
-            "actions": []
+            "target": "CONTROL_CHANNEL_TIMEOUT_SERVER_FRAMES_SENT_CLIENT",
+            "cond": "equal (role client_val)",
+            "actions": [
+              {
+                "type": "assign (result) (result)"
+              },
+              {
+                "type": "assign (frames_received) (frames_received)"
+              },
+              {
+                "type": "assign (sent_frames) (sent_frames)"
+              }
+            ]
+          },
+          {
+            "target": "CONTROL_CHANNEL_TIMEOUT_SERVER_FRAMES_SENT_SERVER",
+            "actions": [
+              {
+                "type": "assign (result) (result)"
+              },
+              {
+                "type": "assign (frames_received) (frames_received)"
+              },
+              {
+                "type": "assign (sent_frames) (sent_frames)"
+              }
+            ]
           }
         ]
       }
@@ -641,9 +696,14 @@
         ]
       }
     },
-    "CONTROL_CHANNEL_TIMEOUT_SERVER_FRAMES_SENT": {
+    "CONTROL_CHANNEL_TIMEOUT_SERVER_FRAMES_SENT_CLIENT": {
       "entry": {
-        "type": "set (Control_Channel_Timeout_After_Server_Frames_Sent) (result)"
+        "type": "set (Server_Received_Error_From_Proxy) (result)"
+      }
+    },
+    "CONTROL_CHANNEL_TIMEOUT_SERVER_FRAMES_SENT_SERVER": {
+      "entry": {
+        "type": "set (Client_Failed_To_Receive_All_Frames) (result)"
       }
     },
     "TIMEOUT": {
