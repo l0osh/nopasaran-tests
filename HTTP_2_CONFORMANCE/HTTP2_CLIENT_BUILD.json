@@ -53,7 +53,10 @@
           "type": "get_from_file (variables connection_settings_client) (connection_settings_client)"
         },
         {
-          "type": "start_http_2_client (client tls_enabled protocol connection_settings_client) (event msg)"
+          "type": "get_from_file (variables cloudflare_origin) (cloudflare_origin)"
+        },
+        {
+          "type": "start_http_2_client (client tls_enabled protocol connection_settings_client cloudflare_origin) (event msg)"
         },
         {
           "type": "done"
