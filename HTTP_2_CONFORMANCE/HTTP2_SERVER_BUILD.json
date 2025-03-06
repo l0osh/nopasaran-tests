@@ -47,16 +47,13 @@
           "type": "get_from_file (variables tls_enabled) (tls_enabled)"
         },
         {
-          "type": "get_from_file (variables protocol) (protocol)"
-        },
-        {
           "type": "get_from_file (variables connection_settings_server) (connection_settings_server)"
         },
         {
           "type": "get_from_file (variables cloudflare_origin) (cloudflare_origin)"
         },
         {
-          "type": "start_http_2_server (server tls_enabled protocol connection_settings_server cloudflare_origin) (event msg)"
+          "type": "start_http_2_server (server tls_enabled connection_settings_server cloudflare_origin) (event msg)"
         },
         {
           "type": "done"
