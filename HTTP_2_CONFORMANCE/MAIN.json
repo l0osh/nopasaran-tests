@@ -100,7 +100,7 @@
       "on": {
         "CLIENT_STARTED": [
           {
-            "target": "WAITING_SERVER_PREFACE",
+            "target": "SENDING_CLIENT_FRAMES",
             "actions": [
               {
                 "type": "assign (client) (client)"
@@ -180,19 +180,22 @@
         ]
       }
     },
-    "WAITING_SERVER_PREFACE": {
+    "SENDING_CLIENT_FRAMES": {
       "entry": [
         {
-          "type": "wait_for_server_preface (client) (event msg frames)"
+          "type": "get_from_file (variables client_frames) (client_frames)"
+        },
+        {
+          "type": "send_client_frames (client client_frames) (event sent_frames result)"
         },
         {
           "type": "trigger (event)"
         }
       ],
       "on": {
-        "PREFACE_RECEIVED": [
+        "FRAMES_SENT": [
           {
-            "target": "SENDING_CLIENT_FRAMES",
+            "target": "EXCHANGING_SYNC_CLIENT_FRAMES_SENT",
             "actions": [
               {
                 "type": "assign (client) (client)"
@@ -201,26 +204,55 @@
                 "type": "assign (ctrl) (ctrl)"
               },
               {
-                "type": "assign (msg) (msg)"
+                "type": "assign (result) (result)"
+              },
+              {
+                "type": "assign (client_val) (client_val)"
               },
               {
                 "type": "assign (role) (role)"
               },
               {
-                "type": "assign (client_val) (client_val)"
+                "type": "assign (sent_frames) (sent_frames)"
               }
             ]
           }
         ],
-        "ERROR": [
+        "GOAWAY_RECEIVED": [
           {
-            "target": "FINAL",
+            "target": "GOAWAY_RECEIVED",
             "actions": [
               {
-                "type": "assign (msg) (msg)"
+                "type": "assign (result) (msg)"
               },
               {
-                "type": "assign (frames) (frames)"
+                "type": "assign (sent_frames) (sent_frames)"
+              }
+            ]
+          }
+        ],
+        "RESET_RECEIVED": [
+          {
+            "target": "RESET_RECEIVED",
+            "actions": [
+              {
+                "type": "assign (result) (msg)"
+              },
+              {
+                "type": "assign (sent_frames) (sent_frames)"
+              }
+            ]
+          }
+        ],
+        "REJECTED": [
+          {
+            "target": "REJECTED",
+            "actions": [
+              {
+                "type": "assign (result) (msg)"
+              },
+              {
+                "type": "assign (sent_frames) (sent_frames)"
               }
             ]
           }
@@ -311,88 +343,6 @@
           }
         ]
       }
-    },
-    "SENDING_CLIENT_FRAMES": {
-      "entry": [
-        {
-          "type": "get_from_file (variables client_frames) (client_frames)"
-        },
-        {
-          "type": "send_client_frames (client client_frames) (event sent_frames result)"
-        },
-        {
-          "type": "trigger (event)"
-        }
-      ],
-      "on": {
-        "FRAMES_SENT": [
-          {
-            "target": "EXCHANGING_SYNC_CLIENT_FRAMES_SENT",
-            "actions": [
-              {
-                "type": "assign (client) (client)"
-              },
-              {
-                "type": "assign (ctrl) (ctrl)"
-              },
-              {
-                "type": "assign (result) (result)"
-              },
-              {
-                "type": "assign (client_val) (client_val)"
-              },
-              {
-                "type": "assign (role) (role)"
-              },
-              {
-                "type": "assign (sent_frames) (sent_frames)"
-              }
-            ]
-          }
-        ],
-        "GOAWAY_RECEIVED": [
-          {
-            "target": "GOAWAY_RECEIVED",
-            "actions": [
-              {
-                "type": "assign (result) (msg)"
-              },
-              {
-                "type": "assign (sent_frames) (sent_frames)"
-              }
-            ]
-          }
-        ],
-        "RESET_RECEIVED": [
-          {
-            "target": "RESET_RECEIVED",
-            "actions": [
-              {
-                "type": "assign (result) (msg)"
-              },
-              {
-                "type": "assign (sent_frames) (sent_frames)"
-              }
-            ]
-          }
-        ],
-        "REJECTED": [
-          {
-            "target": "REJECTED",
-            "actions": [
-              {
-                "type": "assign (result) (msg)"
-              },
-              {
-                "type": "assign (sent_frames) (sent_frames)"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    "FINAL": {
-      "type": "final"
     },
     "EXCHANGING_SYNC_CLIENT_FRAMES_SENT": {
       "entry": [
@@ -879,6 +829,9 @@
       "entry": {
         "type": "set (Client_Failed_To_Receive_All_Frames) (msg)"
       }
+    },
+    "FINAL": {
+      "type": "final"
     },
     "TIMEOUT": {
       "entry": {
