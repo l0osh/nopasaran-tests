@@ -1,0 +1,78 @@
+{
+  "id": "HTTP1_SERVER_BUILD",
+  "initial": "INIT",
+  "states": {
+    "INIT": {
+      "on": {
+        "STARTED": [
+          {
+            "target": "CREATE_SERVER",
+            "actions": [],
+            "meta": {}
+          }
+        ]
+      }
+    },
+    "CREATE_SERVER": {
+      "entry": [
+        {
+          "type": "create_http_1_server (server)"
+        },
+        {
+          "type": "done"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "START_SERVER",
+            "actions": [
+              {
+                "type": "assign (server) (server)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "START_SERVER": {
+      "entry": [
+        {
+          "type": "get_from_file (variables host) (host)"
+        },
+        {
+          "type": "get_from_file (variables port) (port)"
+        },
+        {
+          "type": "start_http_1_server (server host port) (event msg)"
+        },
+        {
+          "type": "done"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "BUILDING_DONE",
+            "actions": [
+              {
+                "type": "assign (server) (server)"
+              },
+              {
+                "type": "assign (event) (event)"
+              },
+              {
+                "type": "assign (msg) (msg)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "BUILDING_DONE": {
+      "entry": {
+        "type": "return_values (event server msg)"
+      }
+    }
+  }
+}

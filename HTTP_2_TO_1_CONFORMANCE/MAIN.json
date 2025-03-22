@@ -1,0 +1,420 @@
+{
+  "id": "MAIN",
+  "initial": "INIT",
+  "states": {
+    "INIT": {
+      "on": {
+        "STARTED": [
+          {
+            "target": "SET_TIMEOUT_TARGET",
+            "actions": []
+          }
+        ]
+      }
+    },
+    "SET_TIMEOUT_TARGET": {
+      "entry": [
+        {
+          "type": "redirect (TIMEOUT TIMEOUT)"
+        },
+        {
+          "type": "done"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "SETTING_UP_CONTROL_CHANNEL",
+            "actions": []
+          }
+        ]
+      }
+    },
+    "SETTING_UP_CONTROL_CHANNEL": {
+      "entry": [
+        {
+          "type": "get_from_file (variables role) (role)"
+        },
+        {
+          "type": "get_from_file (variables client) (client_val)"
+        },
+        {
+          "type": "get_from_file (variables controller_conf_filename) (controller_conf_filename)"
+        },
+        {
+          "type": "call (CONTROL_CHANNEL_SET_UP role controller_conf_filename) (event ctrl)"
+        },
+        {
+          "type": "trigger (event)"
+        }
+      ],
+      "on": {
+        "CONTROL_CHANNEL_READY": [
+          {
+            "target": "BUILDING_HTTP2_CLIENT",
+            "cond": "equal (role client_val)",
+            "actions": [
+              {
+                "type": "assign (role) (role)"
+              },
+              {
+                "type": "assign (ctrl) (ctrl)"
+              },
+              {
+                "type": "assign (client_val) (client_val)"
+              }
+            ]
+          },
+          {
+            "target": "BUILDING_HTTP2_SERVER",
+            "actions": [
+              {
+                "type": "assign (ctrl) (ctrl)"
+              },
+              {
+                "type": "assign (role) (role)"
+              },
+              {
+                "type": "assign (client_val) (client_val)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "BUILDING_HTTP2_CLIENT": {
+      "entry": [
+        {
+          "type": "set (1) (waiting_time)"
+        },
+        {
+          "type": "wait (waiting_time)"
+        },
+        {
+          "type": "call (HTTP2_CLIENT_BUILD) (event client msg)"
+        },
+        {
+          "type": "trigger (event)"
+        }
+      ],
+      "on": {
+        "CLIENT_STARTED": [
+          {
+            "target": "SENDING_CLIENT_FRAMES",
+            "actions": [
+              {
+                "type": "assign (client) (client)"
+              },
+              {
+                "type": "assign (ctrl) (ctrl)"
+              },
+              {
+                "type": "assign (client_val) (client_val)"
+              },
+              {
+                "type": "assign (role) (role)"
+              }
+            ]
+          }
+        ],
+        "ERROR": [
+          {
+            "target": "ERROR",
+            "actions": [
+              {
+                "type": "assign (msg) (msg)"
+              }
+            ]
+          }
+        ],
+        "REJECTED": [
+          {
+            "target": "REJECTED",
+            "actions": [
+              {
+                "type": "assign (msg) (msg)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "BUILDING_HTTP2_SERVER": {
+      "entry": [
+        {
+          "type": "call (HTTP1_SERVER_BUILD) (event server msg)"
+        },
+        {
+          "type": "trigger (event)"
+        }
+      ],
+      "on": {
+        "SERVER_STARTED": [
+          {
+            "target": "RECEIVING_CLIENT_FRAMES",
+            "actions": [
+              {
+                "type": "assign (ctrl) (ctrl)"
+              },
+              {
+                "type": "assign (server) (server)"
+              },
+              {
+                "type": "assign (client_val) (client_val)"
+              },
+              {
+                "type": "assign (role) (role)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "SENDING_CLIENT_FRAMES": {
+      "entry": [
+        {
+          "type": "get_from_file (variables client_frames) (client_frames)"
+        },
+        {
+          "type": "send_client_frames (client client_frames) (event sent_frames result)"
+        },
+        {
+          "type": "trigger (event)"
+        }
+      ],
+      "on": {
+        "FRAMES_SENT": [
+          {
+            "target": "EXCHANGING_SYNC_CLIENT_FRAMES_SENT",
+            "actions": [
+              {
+                "type": "assign (client) (client)"
+              },
+              {
+                "type": "assign (ctrl) (ctrl)"
+              },
+              {
+                "type": "assign (result) (result)"
+              },
+              {
+                "type": "assign (client_val) (client_val)"
+              },
+              {
+                "type": "assign (role) (role)"
+              },
+              {
+                "type": "assign (sent_frames) (sent_frames)"
+              }
+            ]
+          }
+        ],
+        "GOAWAY_RECEIVED": [
+          {
+            "target": "GOAWAY_RECEIVED",
+            "actions": [
+              {
+                "type": "assign (result) (msg)"
+              },
+              {
+                "type": "assign (sent_frames) (sent_frames)"
+              }
+            ]
+          }
+        ],
+        "RESET_RECEIVED": [
+          {
+            "target": "RESET_RECEIVED",
+            "actions": [
+              {
+                "type": "assign (result) (msg)"
+              },
+              {
+                "type": "assign (sent_frames) (sent_frames)"
+              }
+            ]
+          }
+        ],
+        "REJECTED": [
+          {
+            "target": "REJECTED",
+            "actions": [
+              {
+                "type": "assign (result) (msg)"
+              },
+              {
+                "type": "assign (sent_frames) (sent_frames)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "ERROR": {
+      "type": "final"
+    },
+    "REJECTED": {
+      "type": "final"
+    },
+    "RECEIVING_CLIENT_FRAMES": {
+      "entry": [
+        {
+          "type": "receive_http_1_requests (server) (event result packets_received)"
+        },
+        {
+          "type": "trigger (event)"
+        }
+      ],
+      "on": {
+        "ERROR": [
+          {
+            "target": "ERROR",
+            "actions": [
+              {
+                "type": "assign (result) (result)"
+              }
+            ]
+          }
+        ],
+        "RECEIVED_REQUESTS": [
+          {
+            "target": "EXCHANGING_SYNC_CLIENT_FRAMES_SENT",
+            "actions": [
+              {
+                "type": "assign (server) (server)"
+              },
+              {
+                "type": "assign (ctrl) (ctrl)"
+              },
+              {
+                "type": "assign (result) (result)"
+              },
+              {
+                "type": "assign (client_val) (client_val)"
+              },
+              {
+                "type": "assign (role) (role)"
+              },
+              {
+                "type": "assign (packets_received) (packets_received)"
+              }
+            ]
+          }
+        ],
+        "REJECTED": [
+          {
+            "target": "REJECTED",
+            "actions": [
+              {
+                "type": "assign (result) (server_result)"
+              },
+              {
+                "type": "assign (frames_received) (frames_received)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "EXCHANGING_SYNC_CLIENT_FRAMES_SENT": {
+      "entry": [
+        {
+          "type": "set (EXCHANGING_SYNC_CLIENT_FRAMES_SENT) (state)"
+        },
+        {
+          "type": "call (EXCHANGE_SYNC ctrl result) (event result_received)"
+        },
+        {
+          "type": "trigger (event)"
+        }
+      ],
+      "on": {
+        "TIMEOUT": [
+          {
+            "target": "CONTROL_CHANNEL_TIMEOUT_AFTER_CLIENT_FRAMES_SENT_CLIENT",
+            "cond": "equal (role client_val)",
+            "actions": [
+              {
+                "type": "assign (result) (result)"
+              },
+              {
+                "type": "assign (sent_frames) (sent_frames)"
+              }
+            ]
+          },
+          {
+            "target": "CONTROL_CHANNEL_TIMEOUT_AFTER_CLIENT_FRAMES_SENT_SERVER",
+            "actions": [
+              {
+                "type": "assign (result) (result)"
+              },
+              {
+                "type": "assign (frames_received) (frames_received)"
+              }
+            ]
+          }
+        ],
+        "DONE": [
+          {
+            "target": "FINAL",
+            "cond": "equal (role client_val)",
+            "actions": [
+              {
+                "type": "assign (client) (client)"
+              },
+              {
+                "type": "assign (result) (result)"
+              },
+              {
+                "type": "assign (result_received) (result_received)"
+              },
+              {
+                "type": "assign (sent_frames) (sent_frames)"
+              }
+            ]
+          },
+          {
+            "target": "FINAL",
+            "actions": [
+              {
+                "type": "assign (server) (server)"
+              },
+              {
+                "type": "assign (result) (result)"
+              },
+              {
+                "type": "assign (result_received) (result_received)"
+              },
+              {
+                "type": "assign (packets_received) (packets_received)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "GOAWAY_RECEIVED": {
+      "type": "final"
+    },
+    "RESET_RECEIVED": {
+      "type": "final"
+    },
+    "CONTROL_CHANNEL_TIMEOUT_AFTER_CLIENT_FRAMES_SENT_CLIENT": {
+      "entry": {
+        "type": "set (Server_Failed_To_Start_or_Receive_All_Frames) (msg)"
+      }
+    },
+    "CONTROL_CHANNEL_TIMEOUT_AFTER_CLIENT_FRAMES_SENT_SERVER": {
+      "entry": {
+        "type": "set (Client_Received_Error_From_Proxy) (msg)"
+      }
+    },
+    "FINAL": {
+      "type": "final"
+    },
+    "TIMEOUT": {
+      "entry": {
+        "type": "set (TIMEOUT) (result)"
+      }
+    }
+  }
+}
