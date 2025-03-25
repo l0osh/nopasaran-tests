@@ -24,6 +24,9 @@
           "type": "get_from_file (variables server) (server)"
         },
         {
+          "type": "get_from_file (variables controller_conf_filename) (controller_conf_filename)"
+        },
+        {
           "type": "call (CONTROL_CHANNEL_SET_UP role controller_conf_filename) (event ctrl)"
         },
         {
