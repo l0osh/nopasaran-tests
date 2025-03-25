@@ -24,18 +24,6 @@
           "type": "get_from_file (variables server) (server)"
         },
         {
-          "type": "get_from_file (variables port) (port)"
-        },
-        {
-          "type": "get_from_file (variables filter) (filter)"
-        },
-        {
-          "type": "packet_filter (filter)"
-        },
-        {
-          "type": "get_from_file (variables ip) (ip)"
-        },
-        {
           "type": "call (CONTROL_CHANNEL_SET_UP role controller_conf_filename) (event ctrl)"
         },
         {
@@ -49,13 +37,7 @@
             "cond": "equal (role client)",
             "actions": [
               {
-                "type": "assign (port) (port)"
-              },
-              {
                 "type": "assign (ctrl) (ctrl)"
-              },
-              {
-                "type": "assign (ip) (ip)"
               }
             ]
           },
@@ -73,6 +55,12 @@
     },
     "SEN": {
       "entry": [
+        {
+          "type": "get_from_file (variables ip) (ip)"
+        },
+        {
+          "type": "get_from_file (variables port) (port)"
+        },
         {
           "type": "create_TCP_packet (pkt)"
         },
@@ -125,6 +113,12 @@
     },
     "LISTENING": {
       "entry": [
+        {
+          "type": "get_from_file (variables filter) (filter)"
+        },
+        {
+          "type": "packet_filter (filter)"
+        },
         {
           "type": "set (10) (timeout)"
         },
