@@ -12,7 +12,7 @@ The test is configured through a set of variables defined in JSON format. These 
   "client": "client",
   "server": "server",
   "controller_conf_filename": "conf_endpoint.json",
-  "protocol": "tcp",
+  "protocol": "TO_DO",
   "src_ip": "TO_DO",
   "dst_ip": "TO_DO",
   "sport": "TO_DO",
