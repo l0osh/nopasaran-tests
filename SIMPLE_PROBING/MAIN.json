@@ -1,0 +1,493 @@
+{
+  "id": "MAIN",
+  "initial": "INITIALIZING",
+  "states": {
+    "INITIALIZING": {
+      "on": {
+        "STARTED": [
+          {
+            "target": "HANDLING_TIMEOUT",
+            "actions": [],
+            "meta": {}
+          }
+        ]
+      }
+    },
+    "HANDLING_TIMEOUT": {
+      "entry": [
+        {
+          "type": "redirect (TIMEOUT TIMEOUT_ENDING)"
+        },
+        {
+          "type": "done"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "SETTING_UP_CONTROL_CHANNEL",
+            "actions": []
+          }
+        ]
+      }
+    },
+    "SETTING_UP_CONTROL_CHANNEL": {
+      "entry": [
+        {
+          "type": "get_from_file (variables role) (role)"
+        },
+        {
+          "type": "get_from_file (variables client) (client)"
+        },
+        {
+          "type": "get_from_file (variables server) (server)"
+        },
+        {
+          "type": "get_from_file (variables controller_conf_filename) (controller_conf_filename)"
+        },
+        {
+          "type": "call (CONTROL_CHANNEL_SET_UP role controller_conf_filename) (event ctrl)"
+        },
+        {
+          "type": "get_from_file (variables filter) (filter)"
+        },
+        {
+          "type": "packet_filter (filter)"
+        },
+        {
+          "type": "listen (queue)"
+        },
+        {
+          "type": "trigger (event)"
+        }
+      ],
+      "on": {
+        "CONTROL_CHANNEL_READY": [
+          {
+            "target": "LOADING_PROTOCOL_CLIENT",
+            "cond": "equal (role client)",
+            "actions": [
+              {
+                "type": "assign (ctrl) (ctrl)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              }
+            ]
+          },
+          {
+            "target": "LISTENING_PACKET",
+            "cond": "equal (role server)",
+            "actions": [
+              {
+                "type": "assign (ctrl) (ctrl)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "LOADING_PROTOCOL_CLIENT": {
+      "entry": [
+        {
+          "type": "get_from_file (variables protocol) (protocol)"
+        },
+        {
+          "type": "set (udp) (udp)"
+        },
+        {
+          "type": "set (tcp) (tcp)"
+        },
+        {
+          "type": "done"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "CONFIGURING_UDP_CLIENT",
+            "cond": "equal (protocol udp)",
+            "actions": [
+              {
+                "type": "assign (ctrl) (ctrl)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              }
+            ]
+          },
+          {
+            "target": "CONFIGURING_TCP_CLIENT",
+            "cond": "equal (protocol tcp)",
+            "actions": [
+              {
+                "type": "assign (ctrl) (ctrl)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "LISTENING_PACKET": {
+      "entry": [
+        {
+          "type": "set (10) (timeout)"
+        },
+        {
+          "type": "wait_packet_signal (queue timeout)"
+        }
+      ],
+      "on": {
+        "PACKET_AVAILABLE": [
+          {
+            "target": "EXTRACTING_CLIENT_PKT",
+            "actions": [
+              {
+                "type": "assign (queue) (queue)"
+              },
+              {
+                "type": "assign (ctrl) (ctrl)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "CONFIGURING_UDP_CLIENT": {
+      "entry": [
+        {
+          "type": "create_UDP_packet (pkt)"
+        },
+        {
+          "type": "get_from_file (variables sport) (sport)"
+        },
+        {
+          "type": "get_from_file (variables dport) (dport)"
+        },
+        {
+          "type": "set_UDP_sport (pkt sport) (pkt)"
+        },
+        {
+          "type": "set_UDP_dport (pkt dport) (pkt)"
+        },
+        {
+          "type": "done"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "GETTING_SRC_IP_CLIENT",
+            "actions": [
+              {
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (ctrl) (ctrl)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "CONFIGURING_TCP_CLIENT": {
+      "entry": [
+        {
+          "type": "create_TCP_packet (pkt)"
+        },
+        {
+          "type": "get_from_file (variables sport) (sport)"
+        },
+        {
+          "type": "get_from_file (variables dport) (dport)"
+        },
+        {
+          "type": "set_TCP_sport (pkt sport) (pkt)"
+        },
+        {
+          "type": "set_TCP_dport (pkt dport) (pkt)"
+        },
+        {
+          "type": "done"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "GETTING_SRC_IP_CLIENT",
+            "actions": [
+              {
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (ctrl) (ctrl)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "EXTRACTING_CLIENT_PKT": {
+      "entry": [
+        {
+          "type": "get_first_element (queue) (pkt)"
+        },
+        {
+          "type": "done"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "EXCHANGING_PROBES",
+            "actions": [
+              {
+                "type": "assign (pkt) (local_probe)"
+              },
+              {
+                "type": "assign (ctrl) (ctrl)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "GETTING_SRC_IP_CLIENT": {
+      "entry": [
+        {
+          "type": "set (self) (self)"
+        },
+        {
+          "type": "get_from_file (variables src_ip) (src_ip)"
+        },
+        {
+          "type": "done"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "CONFIGURING_IP_CLIENT",
+            "cond": "equal (src_ip self)",
+            "actions": [
+              {
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (ctrl) (ctrl)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              }
+            ]
+          },
+          {
+            "target": "CONFIGURING_SRC_IP_CLIENT",
+            "actions": [
+              {
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (src_ip) (src_ip)"
+              },
+              {
+                "type": "assign (ctrl) (ctrl)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "EXCHANGING_PROBES": {
+      "entry": [
+        {
+          "type": "call (EXCHANGE_SYNC ctrl local_probe) (event remote_probe)"
+        },
+        {
+          "type": "trigger (event)"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "CLOSING_SYNC",
+            "actions": [
+              {
+                "type": "assign (local_probe) (local_probe)"
+              },
+              {
+                "type": "assign (remote_probe) (remote_probe)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "CONFIGURING_IP_CLIENT": {
+      "entry": [
+        {
+          "type": "get_from_file (variables dst_ip) (dst_ip)"
+        },
+        {
+          "type": "set_IP_dst (pkt dst_ip) (pkt)"
+        },
+        {
+          "type": "send (pkt)"
+        }
+      ],
+      "on": {
+        "PACKET_SENT": [
+          {
+            "target": "LISTENING_PACKET",
+            "actions": [
+              {
+                "type": "assign (ctrl) (ctrl)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "CONFIGURING_SRC_IP_CLIENT": {
+      "entry": [
+        {
+          "type": "set_IP_src (pkt src_ip) (pkt)"
+        },
+        {
+          "type": "done"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "CONFIGURING_IP_CLIENT",
+            "actions": [
+              {
+                "type": "assign (pkt) (pkt)"
+              },
+              {
+                "type": "assign (ctrl) (ctrl)"
+              },
+              {
+                "type": "assign (queue) (queue)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "CLOSING_SYNC": {
+      "entry": [
+        {
+          "type": "set (ready_stop) (signal_type)"
+        },
+        {
+          "type": "call (SERVER_SIGNALING signal_type) (event)"
+        },
+        {
+          "type": "get_from_file (variables protocol) (protocol)"
+        },
+        {
+          "type": "set (udp) (udp)"
+        },
+        {
+          "type": "set (tcp) (tcp)"
+        },
+        {
+          "type": "trigger (event)"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "GETTING_TCP_FIELDS",
+            "cond": "equal (protocol tcp)",
+            "actions": [
+              {
+                "type": "assign (local_probe) (local_probe)"
+              },
+              {
+                "type": "assign (remote_probe) (remote_probe)"
+              }
+            ]
+          },
+          {
+            "target": "GETTING_IP_FIELDS",
+            "cond": "equal (protocol udp)",
+            "actions": [
+              {
+                "type": "assign (local_probe) (local_probe)"
+              },
+              {
+                "type": "assign (remote_probe) (remote_probe)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "GETTING_TCP_FIELDS": {
+      "entry": [
+        {
+          "type": "get_TCP_fields (local_probe) (local_tcp_fields)"
+        },
+        {
+          "type": "get_TCP_fields (remote_probe) (remote_tcp_fields)"
+        },
+        {
+          "type": "done"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "GETTING_IP_FIELDS",
+            "actions": [
+              {
+                "type": "assign (local_probe) (local_probe)"
+              },
+              {
+                "type": "assign (remote_probe) (remote_probe)"
+              },
+              {
+                "type": "assign (local_tcp_fields) (local_tcp_fields)"
+              },
+              {
+                "type": "assign (remote_tcp_fields) (remote_tcp_fields)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "GETTING_IP_FIELDS": {
+      "entry": [
+        {
+          "type": "get_IP_fields (local_probe) (local_ip_fields)"
+        },
+        {
+          "type": "get_IP_fields (remote_probe) (remote_ip_fields)"
+        }
+      ]
+    },
+    "TIMEOUT_ENDING": {}
+  }
+}
