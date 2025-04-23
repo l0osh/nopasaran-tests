@@ -1,0 +1,331 @@
+{
+    "id": "MAIN",
+    "initial": "INITIALIZED",
+    "states": {
+      "INITIALIZED": {
+        "on": {
+          "STARTED": [
+            {
+              "target": "INITIALIZING_CONTROL_CHANNEL",
+              "actions": []
+            }
+          ]
+        }
+      },
+      "INITIALIZING_CONTROL_CHANNEL": {
+        "entry": [
+          {
+            "type": "get_from_file (variables role) (role)"
+          },
+          {
+            "type": "get_from_file (variables client) (client)"
+          },
+          {
+            "type": "get_from_file (variables server) (server)"
+          },
+          {
+            "type": "get_from_file (variables controller_conf_filename) (controller_conf_filename)"
+          },
+          {
+            "type": "get_from_file (variables protocol) (protocol)"
+          },
+          {
+            "type": "get_from_file (variables tcp) (tcp)"
+          },
+          {
+            "type": "call (CONTROL_CHANNEL_SET_UP role controller_conf_filename) (event ctrl)"
+          },
+          {
+            "type": "trigger (event)"
+          }
+        ],
+        "on": {
+          "CONTROL_CHANNEL_READY": [
+            {
+              "target": "FORMING_REQUEST",
+              "cond": "equal (role client)",
+              "actions": [
+                {
+                  "type": "assign (protocol) (protocol)"
+                },
+                {
+                  "type": "assign (tcp) (tcp)"
+                },
+                {
+                  "type": "assign (ctrl) (ctrl)"
+                }
+              ]
+            },
+            {
+              "target": "SERVER_BUILD",
+              "actions": [
+                {
+                  "type": "assign (protocol) (protocol)"
+                },
+                {
+                  "type": "assign (tcp) (tcp)"
+                },
+                {
+                  "type": "assign (ctrl) (ctrl)"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "FORMING_REQUEST": {
+        "entry": [
+          {
+            "type": "set (1) (waiting_time)"
+          },
+          {
+            "type": "wait (waiting_time)"
+          },
+          {
+            "type": "get_from_file (variables ip) (ip)"
+          },
+          {
+            "type": "get_from_file (variables port) (port)"
+          },
+          {
+            "type": "get_from_file (variables payload) (payload)"
+          },
+          {
+            "type": "set (3) (timeout)"
+          },
+          {
+            "type": "done"
+          }
+        ],
+        "on": {
+          "DONE": [
+            {
+              "target": "CREATE_TCP_ECHO",
+              "cond": "equal (protocol tcp)",
+              "actions": [
+                {
+                  "type": "assign (ip) (ip)"
+                },
+                {
+                  "type": "assign (port) (port)"
+                },
+                {
+                  "type": "assign (payload) (payload)"
+                },
+                {
+                  "type": "assign (timeout) (timeout)"
+                },
+                {
+                  "type": "assign (ctrl) (ctrl)"
+                }
+              ]
+            },
+            {
+              "target": "CREATE_UDP_ECHO",
+              "actions": [
+                {
+                  "type": "assign (ip) (ip)"
+                },
+                {
+                  "type": "assign (port) (port)"
+                },
+                {
+                  "type": "assign (payload) (payload)"
+                },
+                {
+                  "type": "assign (timeout) (timeout)"
+                },
+                {
+                  "type": "assign (ctrl) (ctrl)"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "SERVER_BUILD": {
+        "entry": [
+          {
+            "type": "create_echo_server (server)"
+          },
+          {
+            "type": "get_from_file (variables ip) (ip)"
+          },
+          {
+            "type": "get_from_file (variables port) (port)"
+          },
+          {
+            "type": "set (3) (timeout)"
+          },
+          {
+            "type": "done"
+          }
+        ],
+        "on": {
+          "DONE": [
+            {
+              "target": "START_UDP_LISTENING",
+              "cond": "equal (protocol tcp)",
+              "actions": [
+                {
+                  "type": "assign (server) (server)"
+                },
+                {
+                  "type": "assign (ip) (ip)"
+                },
+                {
+                  "type": "assign (port) (port)"
+                },
+                {
+                  "type": "assign (timeout) (timeout)"
+                },
+                {
+                  "type": "assign (ctrl) (ctrl)"
+                }
+              ]
+            },
+            {
+              "target": "START_TCP_LISTENING",
+              "actions": [
+                {
+                  "type": "assign (server) (server)"
+                },
+                {
+                  "type": "assign (ip) (ip)"
+                },
+                {
+                  "type": "assign (port) (port)"
+                },
+                {
+                  "type": "assign (timeout) (timeout)"
+                },
+                {
+                  "type": "assign (ctrl) (ctrl)"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "CREATE_TCP_ECHO": {
+        "entry": [
+          {
+            "type": "make_tcp_echo_request (ip port payload timeout) (response)"
+          },
+          {
+            "type": "done"
+          }
+        ],
+        "on": {
+          "DONE": [
+            {
+              "target": "EXCHANGE_SYNC",
+              "actions": [
+                {
+                  "type": "assign (ctrl) (ctrl)"
+                },
+                {
+                  "type": "assign (response) (received)"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "CREATE_UDP_ECHO": {
+        "entry": [
+          {
+            "type": "make_udp_echo_request (ip port payload timeout) (response)"
+          },
+          {
+            "type": "done"
+          }
+        ],
+        "on": {
+          "DONE": [
+            {
+              "target": "EXCHANGE_SYNC",
+              "actions": [
+                {
+                  "type": "assign (ctrl) (ctrl)"
+                },
+                {
+                  "type": "assign (response) (received)"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "START_UDP_LISTENING": {
+        "entry": {
+          "type": "start_tcp_echo_server (server ip port timeout) (event request)"
+        },
+        "on": {
+          "REQUEST_RECIEVED": [
+            {
+              "target": "EXCHANGE_SYNC",
+              "actions": [
+                {
+                  "type": "assign (request) (received)"
+                },
+                {
+                  "type": "assign (ctrl) (ctrl)"
+                }
+              ]
+            }
+          ],
+          "TIMEOUT": [
+            {
+              "target": "TIMEOUT",
+              "actions": []
+            }
+          ]
+        }
+      },
+      "START_TCP_LISTENING": {
+        "entry": {
+          "type": "start_udp_echo_server (server ip port timeout) (event request)"
+        },
+        "on": {
+          "REQUEST_RECIEVED": [
+            {
+              "target": "EXCHANGE_SYNC",
+              "actions": [
+                {
+                  "type": "assign (request) (received)"
+                },
+                {
+                  "type": "assign (ctrl) (ctrl)"
+                }
+              ]
+            }
+          ],
+          "TIMEOUT": [
+            {
+              "target": "TIMEOUT",
+              "actions": []
+            }
+          ]
+        }
+      },
+      "EXCHANGE_SYNC": {
+        "entry": [
+          {
+            "type": "call (EXCHANGE_SYNC ctrl received) (event sync_dict)"
+          },
+          {
+            "type": "set (ready_stop) (signal_type)"
+          },
+          {
+            "type": "call (SERVER_SIGNALING signal_type) (signaling-event)"
+          }
+        ]
+      },
+      "TIMEOUT": {
+        "entry": {
+          "type": "set (TIMEOUT) (timeout)"
+        }
+      }
+    }
+  }
