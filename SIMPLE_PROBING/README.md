@@ -11,7 +11,7 @@ The test is configured through a set of variables defined in JSON format. These 
   "role": "TO_DO",
   "client": "client",
   "server": "server",
-  "controller_conf_filename": "conf_endpoint.json",
+  "controller_conf_filename": "controller_configuration.json" ,
   "protocol": "TO_DO",
   "src_ip": "TO_DO",
   "dst_ip": "TO_DO",
@@ -29,7 +29,7 @@ The test is configured through a set of variables defined in JSON format. These 
 
 - **server**: Identifies the receiving entity, responsible for capturing and validating the incoming probe packet.
 
-- **controller_conf_filename**: The name of the controller configuration file (default is `conf_endpoint.json`). This file provides synchronization and parameter control for the client and server instances involved in the test.
+- **controller_conf_filename**: The name of the controller configuration file (default is `"controller_configuration.json"`). This file provides synchronization and parameter control for the client and server instances involved in the test.
 
 - **protocol**: Specifies the transport layer protocol used for the probe packet. Acceptable values are `"tcp"` or `"udp"`. This determines how the packet is constructed and which headers are analyzed for modification.
 
