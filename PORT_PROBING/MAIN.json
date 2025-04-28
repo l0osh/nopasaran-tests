@@ -30,7 +30,7 @@
             "type": "get_from_file (variables protocol) (protocol)"
           },
           {
-            "type": "get_from_file (variables tcp) (tcp)"
+            "type": "set (tcp) (tcp)"
           },
           {
             "type": "call (CONTROL_CHANNEL_SET_UP role controller_conf_filename) (event ctrl)"
@@ -82,7 +82,7 @@
             "type": "wait (waiting_time)"
           },
           {
-            "type": "get_from_file (variables ip) (ip)"
+            "type": "get_from_file (variables server_ip) (server_ip)"
           },
           {
             "type": "done"
@@ -95,7 +95,7 @@
               "cond": "equal (protocol tcp)",
               "actions": [
                 {
-                  "type": "assign (ip) (ip)"
+                  "type": "assign (server_ip) (server_ip)"
                 },
                 {
                   "type": "assign (ctrl) (ctrl)"
@@ -106,7 +106,7 @@
               "target": "PROBE_UDP_PACKETS",
               "actions": [
                 {
-                  "type": "assign (ip) (ip)"
+                  "type": "assign (server_ip) (server_ip)"
                 },
                 {
                   "type": "assign (ctrl) (ctrl)"
@@ -165,7 +165,7 @@
       "PROBE_TCP_PACKETS": {
         "entry": [
           {
-            "type": "probe_tcp_syn_ports (ip)"
+            "type": "probe_tcp_syn_ports (server_ip)"
           },
           {
             "type": "create_dict (dict)"
@@ -199,7 +199,7 @@
       "PROBE_UDP_PACKETS": {
         "entry": [
           {
-            "type": "probe_udp_ports (ip)"
+            "type": "probe_udp_ports (server_ip)"
           },
           {
             "type": "create_dict (dict)"
