@@ -17,6 +17,7 @@ The test is configured through a set of variables defined in JSON format. These 
   "server": "TO_DO",
   "controller_conf_filename": "TO_DO",
   "protocol": "TO_DO",
+  "source_port": "TO_DO",
   "client_ip": "TO_DO",
   "server_ip": "TO_DO",
   "timeout": "TO_DO"
@@ -34,6 +35,8 @@ The test is configured through a set of variables defined in JSON format. These 
 - **controller_conf_filename**: The name of the controller configuration file (default is `"conf_endpoint.json"`). This file provides synchronization and parameter control for the client and server instances involved in the test.
 
 - **protocol**: Specifies the transport layer protocol used for port scanning. Acceptable values are `"tcp"` or `"udp"`. This determines whether TCP SYN scanning or UDP port scanning is performed.
+
+- **source_port**: Specifies the source port number to be used when sending probe packets.
 
 - **client_ip**: The IP address of the client to accept connections from. This ensures the listener filters the incoming probes based on the client's IP address.
 
