@@ -35,8 +35,8 @@ The test is configured through a set of variables defined in JSON format. These 
 
 - **protocol**: Specifies the transport layer protocol used for port scanning. Acceptable values are `"tcp"` or `"udp"`. This determines whether TCP SYN scanning or UDP port scanning is performed.
 
-- **ip**: (Client only) The target IP address to scan. This is the destination address where the port scanning will be performed.
+- **client_ip**: The IP address of the client to accept connections from. This ensures the listener filters the incoming probes based on the client's IP address.
 
-- **client_ip**: The IP address of the client to accept connections from. This ensures the server only responds to the authorized scanning client.
+- **server_ip**: The target IP address to scan. This is the destination address where the port scanning will be performed.
 
 - **timeout**: The duration in seconds that the server will wait for incoming probes before timing out. This prevents indefinite waiting periods.
