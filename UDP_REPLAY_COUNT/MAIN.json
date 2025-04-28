@@ -1,0 +1,235 @@
+{
+  "id": "MAIN",
+  "initial": "INITIALIZED",
+  "states": {
+    "INITIALIZED": {
+      "on": {
+        "STARTED": [
+          {
+            "target": "INITIALIZING_CONTROL_CHANNEL",
+            "actions": []
+          }
+        ]
+      }
+    },
+    "INITIALIZING_CONTROL_CHANNEL": {
+      "entry": [
+        {
+          "type": "get_from_file (variables role) (role)"
+        },
+        {
+          "type": "get_from_file (variables client) (client)"
+        },
+        {
+          "type": "get_from_file (variables server) (server)"
+        },
+        {
+          "type": "get_from_file (variables protocol) (protocol)"
+        },
+        {
+          "type": "get_from_file (variables controller_conf_filename) (controller_conf_filename)"
+        },
+        {
+          "type": "set (tcp) (tcp)"
+        },
+        {
+          "type": "call (CONTROL_CHANNEL_SET_UP role controller_conf_filename) (event ctrl)"
+        },
+        {
+          "type": "trigger (event)"
+        }
+      ],
+      "on": {
+        "CONTROL_CHANNEL_READY": [
+          {
+            "target": "SETTING_UP_CLIENT",
+            "cond": "equal (role client)",
+            "actions": [
+              {
+                "type": "assign (protocol) (protocol)"
+              },
+              {
+                "type": "assign (tcp) (tcp)"
+              },
+              {
+                "type": "assign (ctrl) (ctrl)"
+              }
+            ]
+          },
+          {
+            "target": "SETTING_UP_SERVER",
+            "actions": [
+              {
+                "type": "assign (protocol) (protocol)"
+              },
+              {
+                "type": "assign (tcp) (tcp)"
+              },
+              {
+                "type": "assign (ctrl) (ctrl)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "SETTING_UP_CLIENT": {
+      "entry": [
+        {
+          "type": "set (1) (waiting_time)"
+        },
+        {
+          "type": "wait (waiting_time)"
+        },
+        {
+          "type": "get_from_file (variables server_ip) (server_ip)"
+        },
+        {
+          "type": "get_from_file (variables source_port) (source_port)"
+        },
+        {
+          "type": "get_from_file (variables destination_port) (destination_port)"
+        },
+        {
+          "type": "get_from_file (variables count) (count)"
+        },
+        {
+          "type": "done"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "PROBE_UDP_PACKETS",
+            "actions": [
+              {
+                "type": "assign (server_ip) (server_ip)"
+              },
+              {
+                "type": "assign (source_port) (source_port)"
+              },
+              {
+                "type": "assign (destination_port) (destination_port)"
+              },
+              {
+                "type": "assign (count) (count)"
+              },
+              {
+                "type": "assign (ctrl) (ctrl)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "SETTING_UP_SERVER": {
+      "entry": [
+        {
+          "type": "get_from_file (variables client_ip) (client_ip)"
+        },
+        {
+          "type": "get_from_file (variables timeout) (timeout)"
+        },
+        {
+          "type": "get_from_file (variables destination_port) (destination_port)"
+        },
+        {
+          "type": "done"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "START_UDP_LISTENING",
+            "actions": [
+              {
+                "type": "assign (client_ip) (client_ip)"
+              },
+              {
+                "type": "assign (timeout) (timeout)"
+              },
+              {
+                "type": "assign (destination_port) (destination_port)"
+              },
+              {
+                "type": "assign (ctrl) (ctrl)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "PROBE_UDP_PACKETS": {
+      "entry": [
+        {
+          "type": "replay_udp_packets (server_ip source_port destination_port count)"
+        },
+        {
+          "type": "create_dict (dict)"
+        },
+        {
+          "type": "set (true) (packets_sent)"
+        },
+        {
+          "type": "add_element_to_dict (dict packets_sent) (dict)"
+        },
+        {
+          "type": "done"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "EXCHANGE_SYNC",
+            "actions": [
+              {
+                "type": "assign (dict) (dict)"
+              },
+              {
+                "type": "assign (ctrl) (ctrl)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "START_UDP_LISTENING": {
+      "entry": [
+        {
+          "type": "listen_udp_replays (timeout client_ip destination_port) (results)"
+        },
+        {
+          "type": "done"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "EXCHANGE_SYNC",
+            "actions": [
+              {
+                "type": "assign (results) (dict)"
+              },
+              {
+                "type": "assign (ctrl) (ctrl)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "EXCHANGE_SYNC": {
+      "entry": [
+        {
+          "type": "call (EXCHANGE_SYNC ctrl dict) (event sync_dict)"
+        },
+        {
+          "type": "set (ready_stop) (signal_type)"
+        },
+        {
+          "type": "call (SERVER_SIGNALING signal_type) (signaling-event)"
+        }
+      ]
+    }
+  }
+}
