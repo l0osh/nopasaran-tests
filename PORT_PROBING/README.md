@@ -17,8 +17,8 @@ The test is configured through a set of variables defined in JSON format. These 
   "server": "TO_DO",
   "controller_conf_filename": "TO_DO",
   "protocol": "TO_DO",
-  "ip": "TO_DO",
   "client_ip": "TO_DO",
+  "server_ip": "TO_DO",
   "timeout": "TO_DO"
 }
 ```
