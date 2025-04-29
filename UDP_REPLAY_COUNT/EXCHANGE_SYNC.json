@@ -60,7 +60,7 @@
     "WAITING_FOR_SYNC": {
       "entry": [
         {
-          "type": "set (10) (timeout)"
+          "type": "set (30) (timeout)"
         },
         {
           "type": "wait_sync_signal (ctrl timeout) (msg)"
