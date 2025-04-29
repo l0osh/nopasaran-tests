@@ -51,4 +51,4 @@ The test is configured using a set of variables defined in JSON format. These va
 
 ### Timing Constraint
 
-**Important**: The product of `delay` and `batch_size` (`delay * batch_size`) or the `timeout` — whichever is greater — must not exceed the synchronization timeout defined in `EXCHANGE_SYNC.json`.
+**Important**: The product of `delay` and `num_batches` (`delay * num_batches`) or the `timeout` — whichever is greater — must not exceed the synchronization timeout defined in `EXCHANGE_SYNC.json`.
