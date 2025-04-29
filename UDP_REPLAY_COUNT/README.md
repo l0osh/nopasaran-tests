@@ -48,3 +48,7 @@ The test is configured using a set of variables defined in JSON format. These va
 - **timeout**: The duration in seconds that the server will wait for incoming probes before timing out. This prevents indefinite waiting periods.
 
 - **payload**: The data content that each UDP packet will carry. This can be used to define the size or content of the UDP packets being sent.
+
+### Timing Constraint
+
+**Important**: The product of `delay` and `batch_size` (`delay * batch_size`) or the `timeout` — whichever is greater — must not exceed the synchronization timeout defined in `EXCHANGE_SYNC.json`.
