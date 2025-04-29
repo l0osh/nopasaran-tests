@@ -36,7 +36,7 @@
       "on": {
         "CONTROL_CHANNEL_READY": [
           {
-            "target": "SETTING_UP_CLIENT",
+            "target": "PROBE_UDP_PACKETS",
             "cond": "equal (role client)",
             "actions": [
               {
@@ -55,7 +55,7 @@
         ]
       }
     },
-    "SETTING_UP_CLIENT": {
+    "PROBE_UDP_PACKETS": {
       "entry": [
         {
           "type": "set (1) (waiting_time)"
@@ -73,7 +73,28 @@
           "type": "get_from_file (variables destination_port) (destination_port)"
         },
         {
-          "type": "get_from_file (variables count) (count)"
+          "type": "get_from_file (variables batch_size) (batch_size)"
+        },
+        {
+          "type": "get_from_file (variables num_batches) (num_batches)"
+        },
+        {
+          "type": "get_from_file (variables payload) (payload)"
+        },
+        {
+          "type": "get_from_file (variables delay) (delay)"
+        },
+        {
+          "type": "replay_udp_packets (server_ip source_port destination_port batch_size num_batches payload delay)"
+        },
+        {
+          "type": "create_dict (dict)"
+        },
+        {
+          "type": "set (true) (packets_sent)"
+        },
+        {
+          "type": "add_element_to_dict (dict packets_sent) (dict)"
         },
         {
           "type": "done"
@@ -82,19 +103,10 @@
       "on": {
         "DONE": [
           {
-            "target": "PROBE_UDP_PACKETS",
+            "target": "EXCHANGE_SYNC",
             "actions": [
               {
-                "type": "assign (server_ip) (server_ip)"
-              },
-              {
-                "type": "assign (source_port) (source_port)"
-              },
-              {
-                "type": "assign (destination_port) (destination_port)"
-              },
-              {
-                "type": "assign (count) (count)"
+                "type": "assign (dict) (dict)"
               },
               {
                 "type": "assign (ctrl) (ctrl)"
@@ -129,43 +141,6 @@
             "actions": [
               {
                 "type": "assign (results) (dict)"
-              },
-              {
-                "type": "assign (ctrl) (ctrl)"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    "PROBE_UDP_PACKETS": {
-      "entry": [
-        {
-          "type": "get_from_file (variables payload) (payload)"
-        },
-        {
-          "type": "replay_udp_packets (server_ip source_port destination_port count payload)"
-        },
-        {
-          "type": "create_dict (dict)"
-        },
-        {
-          "type": "set (true) (packets_sent)"
-        },
-        {
-          "type": "add_element_to_dict (dict packets_sent) (dict)"
-        },
-        {
-          "type": "done"
-        }
-      ],
-      "on": {
-        "DONE": [
-          {
-            "target": "EXCHANGE_SYNC",
-            "actions": [
-              {
-                "type": "assign (dict) (dict)"
               },
               {
                 "type": "assign (ctrl) (ctrl)"

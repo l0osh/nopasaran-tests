@@ -15,7 +15,9 @@ The test is configured using a set of variables defined in JSON format. These va
   "server_ip": "TO_DO",
   "source_port": "TO_DO",
   "destination_port": "TO_DO",
-  "count": "TO_DO",
+  "batch_size": "TO_DO",
+  "num_batches": "TO_DO",
+  "delay": "TO_DO",
   "timeout": "TO_DO",
   "payload": "TO_DO"
 }
@@ -37,7 +39,11 @@ The test is configured using a set of variables defined in JSON format. These va
 
 - **destination_port**: UDP destination port expected at the server.
 
-- **count**: The number of UDP packets the client should attempt to send during the test.
+- **batch_size**: The number of UDP packets to send in each batch.
+
+- **num_batches**: The number of batches to send. Each batch will contain batch_size packets, and the test will run for the specified number of batches.
+
+- **delay**: The time delay (in seconds) to wait between batches of UDP packets.
 
 - **timeout**: The duration in seconds that the server will wait for incoming probes before timing out. This prevents indefinite waiting periods.
 
