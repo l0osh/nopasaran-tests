@@ -1,0 +1,103 @@
+{
+  "id": "MAIN",
+  "initial": "INITIALIZED",
+  "states": {
+    "INITIALIZED": {
+      "on": {
+        "STARTED": [
+          {
+            "target": "INITIALIZING_CONTROL_CHANNEL",
+            "actions": []
+          }
+        ]
+      }
+    },
+    "INITIALIZING_CONTROL_CHANNEL": {
+      "entry": [
+        {
+          "type": "get_from_file (variables role) (role)"
+        },
+        {
+          "type": "get_from_file (variables client) (client)"
+        },
+        {
+          "type": "get_from_file (variables server) (server)"
+        },
+        {
+          "type": "get_from_file (variables controller_conf_filename) (controller_conf_filename)"
+        },
+        {
+          "type": "call (CONTROL_CHANNEL_SET_UP role controller_conf_filename) (event ctrl)"
+        },
+        {
+          "type": "trigger (event)"
+        }
+      ],
+      "on": {
+        "CONTROL_CHANNEL_READY": [
+          {
+            "target": "SENDING_HTTP_REQUEST",
+            "actions": [
+              {
+                "type": "assign (ctrl) (ctrl)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "SENDING_HTTP_REQUEST": {
+      "entry": [
+        {
+          "type": "get_from_file (variables ip) (ip)"
+        },
+        {
+          "type": "get_from_file (variables hostname) (hostname)"
+        },
+        {
+          "type": "get_from_file (variables use_https) (use_https)"
+        },
+        {
+          "type": "request_by_ip (ip hostname use_https) (result)"
+        },
+        {
+          "type": "create_dict (dict)"
+        },
+        {
+          "type": "add_element_to_dict (dict result) (dict)"
+        },
+        {
+          "type": "done"
+        }
+      ],
+      "on": {
+        "DONE": [
+          {
+            "target": "EXCHANGE_SYNC",
+            "actions": [
+              {
+                "type": "assign (dict) (dict)"
+              },
+              {
+                "type": "assign (ctrl) (ctrl)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "EXCHANGE_SYNC": {
+      "entry": [
+        {
+          "type": "call (EXCHANGE_SYNC ctrl dict) (event sync_dict)"
+        },
+        {
+          "type": "set (ready_stop) (signal_type)"
+        },
+        {
+          "type": "call (SERVER_SIGNALING signal_type) (signaling-event)"
+        }
+      ]
+    }
+  }
+}
