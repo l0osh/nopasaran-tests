@@ -141,7 +141,10 @@
     "PROBE_UDP_PACKETS": {
       "entry": [
         {
-          "type": "replay_udp_packets (server_ip source_port destination_port count)"
+          "type": "get_from_file (variables payload) (payload)"
+        },
+        {
+          "type": "replay_udp_packets (server_ip source_port destination_port count payload)"
         },
         {
           "type": "create_dict (dict)"

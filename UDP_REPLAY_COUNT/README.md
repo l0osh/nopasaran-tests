@@ -16,7 +16,8 @@ The test is configured using a set of variables defined in JSON format. These va
   "source_port": "TO_DO",
   "destination_port": "TO_DO",
   "count": "TO_DO",
-  "timeout": "TO_DO"
+  "timeout": "TO_DO",
+  "payload": "TO_DO"
 }
 ```
 
@@ -39,3 +40,5 @@ The test is configured using a set of variables defined in JSON format. These va
 - **count**: The number of UDP packets the client should attempt to send during the test.
 
 - **timeout**: The duration in seconds that the server will wait for incoming probes before timing out. This prevents indefinite waiting periods.
+
+- **payload**: The data content that each UDP packet will carry. This can be used to define the size or content of the UDP packets being sent.
