@@ -1,7 +1,6 @@
 ## Overview
 
-The purpose of this test is to determine how many UDP packets sent by a sender (client) are authorized (i.e., allowed through the network) and successfully received by a receiver (server) within a short period of time.  
-This helps assess whether there are limits or restrictions applied to high-rate UDP traffic.
+The purpose of this test is to determine how many UDP packets sent by a sender (client) are authorized (i.e., allowed through the network) and successfully received by a receiver (server) within a short period of time.
 
 ## Test Variables Structure
 
@@ -12,7 +11,6 @@ The test is configured using a set of variables defined in JSON format. These va
   "role": "TO_DO",
   "client": "client",
   "server": "server",
-  "protocol": "TO_DO",
   "controller_conf_filename": "controller_configuration.json",
   "server_ip": "TO_DO",
   "source_port": "TO_DO",
@@ -29,8 +27,6 @@ The test is configured using a set of variables defined in JSON format. These va
 - **client**: Identifies the entity responsible for sending UDP packets.
 
 - **server**: Identifies the entity responsible for receiving and counting UDP packets.
-
-- **protocol**: Specifies the transport protocol. Must be set to `"udp"`.
 
 - **controller_conf_filename**: Name of the controller configuration file that synchronizes client and server (default is `"controller_configuration.json"`).
 

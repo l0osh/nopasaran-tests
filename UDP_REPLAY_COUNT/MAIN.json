@@ -24,13 +24,7 @@
           "type": "get_from_file (variables server) (server)"
         },
         {
-          "type": "get_from_file (variables protocol) (protocol)"
-        },
-        {
           "type": "get_from_file (variables controller_conf_filename) (controller_conf_filename)"
-        },
-        {
-          "type": "set (tcp) (tcp)"
         },
         {
           "type": "call (CONTROL_CHANNEL_SET_UP role controller_conf_filename) (event ctrl)"
@@ -46,25 +40,13 @@
             "cond": "equal (role client)",
             "actions": [
               {
-                "type": "assign (protocol) (protocol)"
-              },
-              {
-                "type": "assign (tcp) (tcp)"
-              },
-              {
                 "type": "assign (ctrl) (ctrl)"
               }
             ]
           },
           {
-            "target": "SETTING_UP_SERVER",
+            "target": "STARTING_UDP_SERVER",
             "actions": [
-              {
-                "type": "assign (protocol) (protocol)"
-              },
-              {
-                "type": "assign (tcp) (tcp)"
-              },
               {
                 "type": "assign (ctrl) (ctrl)"
               }
@@ -122,7 +104,7 @@
         ]
       }
     },
-    "SETTING_UP_SERVER": {
+    "STARTING_UDP_SERVER": {
       "entry": [
         {
           "type": "get_from_file (variables client_ip) (client_ip)"
@@ -134,22 +116,19 @@
           "type": "get_from_file (variables destination_port) (destination_port)"
         },
         {
+          "type": "listen_udp_replays (timeout client_ip destination_port) (results)"
+        },
+        {
           "type": "done"
         }
       ],
       "on": {
         "DONE": [
           {
-            "target": "START_UDP_LISTENING",
+            "target": "EXCHANGE_SYNC",
             "actions": [
               {
-                "type": "assign (client_ip) (client_ip)"
-              },
-              {
-                "type": "assign (timeout) (timeout)"
-              },
-              {
-                "type": "assign (destination_port) (destination_port)"
+                "type": "assign (results) (dict)"
               },
               {
                 "type": "assign (ctrl) (ctrl)"
@@ -184,31 +163,6 @@
             "actions": [
               {
                 "type": "assign (dict) (dict)"
-              },
-              {
-                "type": "assign (ctrl) (ctrl)"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    "START_UDP_LISTENING": {
-      "entry": [
-        {
-          "type": "listen_udp_replays (timeout client_ip destination_port) (results)"
-        },
-        {
-          "type": "done"
-        }
-      ],
-      "on": {
-        "DONE": [
-          {
-            "target": "EXCHANGE_SYNC",
-            "actions": [
-              {
-                "type": "assign (results) (dict)"
               },
               {
                 "type": "assign (ctrl) (ctrl)"
