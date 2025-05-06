@@ -43,13 +43,13 @@
                 "type": "assign (ctrl) (ctrl)"
               },
               {
-                "type": "assign (dict) (dict)"
-              },
-              {
                 "type": "assign (role) (role)"
               },
               {
                 "type": "assign (client) (client)"
+              },
+              {
+                "type": "assign (dict) (dict)"
               }
             ]
           },
@@ -79,40 +79,13 @@
           "type": "get_from_file (variables ip) (ip)"
         },
         {
-          "type": "get_from_file (variables qname) (qname)"
-        },
-        {
-          "type": "get_from_file (variables port) (port)"
-        },
-        {
-          "type": "create_DNS_packet (pkt)"
-        },
-        {
-          "type": "set_IP_dst (pkt ip) (pkt)"
-        },
-        {
-          "type": "set_UDP_sport (pkt port) (pkt)"
-        },
-        {
-          "type": "create_DNS_query (query)"
-        },
-        {
-          "type": "set_query_name (query qname) (query)"
-        },
-        {
-          "type": "add_DNS_query_to_DNS_packet (pkt query) (pkt)"
-        },
-        {
-          "type": "set_DNS_packet_query (pkt) (pkt)"
-        },
-        {
-          "type": "create_dict (dict)"
-        },
-        {
           "type": "set (true) (query_sent)"
         },
         {
           "type": "add_element_to_dict (dict query_sent) (dict)"
+        },
+        {
+          "type": "call (DNS_QUERY_BUILD ip) (pkt)"
         },
         {
           "type": "send (pkt)"
@@ -193,6 +166,9 @@
             "actions": [
               {
                 "type": "assign (ctrl) (ctrl)"
+              },
+              {
+                "type": "assign (dict) (dict)"
               }
             ]
           }
@@ -202,10 +178,10 @@
     "RESPONSE_RECIEVED": {
       "entry": [
         {
-          "type": "set (true) (response_received)"
+          "type": "set (true) (received)"
         },
         {
-          "type": "add_element_to_dict (dict response_received) (dict)"
+          "type": "add_element_to_dict (dict received) (dict)"
         },
         {
           "type": "done"
@@ -230,82 +206,25 @@
     "SENDING_RESPONSE": {
       "entry": [
         {
-          "type": "set (true) (query_received)"
-        },
-        {
-          "type": "add_element_to_dict (dict query_received) (dict)"
+          "type": "set (true) (received)"
         },
         {
           "type": "get_first_element (queue) (pkt)"
         },
         {
-          "type": "get_DNS_transaction_id (pkt) (txid)"
-        },
-        {
-          "type": "get_DNS_query_from_DNS_packet (pkt) (cquery)"
-        },
-        {
-          "type": "get_query_name (cquery) (qname)"
-        },
-        {
-          "type": "get_IP_src (pkt) (cip)"
-        },
-        {
-          "type": "get_UDP_sport (pkt) (sport)"
-        },
-        {
-          "type": "get_UDP_dport (pkt) (dport)"
-        },
-        {
-          "type": "create_DNS_packet (rpacket)"
-        },
-        {
-          "type": "set_IP_dst (rpacket cip) (rpacket)"
-        },
-        {
-          "type": "set_UDP_sport (rpacket dport) (rpacket)"
-        },
-        {
-          "type": "set_UDP_dport (rpacket sport) (rpacket)"
-        },
-        {
-          "type": "set_DNS_transaction_id (rpacket txid) (rpacket)"
-        },
-        {
-          "type": "set_DNS_packet_response (rpacket) (rpacket)"
-        },
-        {
-          "type": "create_DNS_query (rquery)"
-        },
-        {
-          "type": "set_query_name (rquery qname) (rquery)"
-        },
-        {
-          "type": "add_DNS_query_to_DNS_packet (rpacket rquery) (rpkt)"
-        },
-        {
-          "type": "create_DNS_resource_record (rr)"
-        },
-        {
-          "type": "set_DNS_resource_record_domain (rr qname) (rr)"
-        },
-        {
-          "type": "set (127.0.0.1) (ip)"
-        },
-        {
-          "type": "set_DNS_resource_record_value (rr ip) (rr)"
-        },
-        {
-          "type": "add_DNS_response_to_answer (rpacket rr) (rpacket)"
-        },
-        {
           "type": "set (true) (dns_response_sent)"
+        },
+        {
+          "type": "call (DNS_RESPONSE_BUILD pkt) (rpacket)"
+        },
+        {
+          "type": "add_element_to_dict (dict received) (dict)"
         },
         {
           "type": "add_element_to_dict (dict dns_response_sent) (dict)"
         },
         {
-          "type": "set (2) (time)"
+          "type": "set (0.5) (time)"
         },
         {
           "type": "wait (time)"
@@ -333,13 +252,10 @@
     "TIMEOUT": {
       "entry": [
         {
-          "type": "set (false) (packet_received)"
+          "type": "set (false) (received)"
         },
         {
-          "type": "create_dict (dict)"
-        },
-        {
-          "type": "add_element_to_dict (dict packet_received ) (dict)"
+          "type": "add_element_to_dict (dict received ) (dict)"
         },
         {
           "type": "done"

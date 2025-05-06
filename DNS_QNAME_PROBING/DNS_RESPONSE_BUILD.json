@@ -1,0 +1,143 @@
+{
+    "id": "DNS_RESPONSE_BUILD",
+    "initial": "INIT",
+    "states": {
+      "INIT": {
+        "on": {
+          "STARTED": [
+            {
+              "target": "RETRIEVING_PACKET_DATA",
+              "actions": [],
+              "meta": {}
+            }
+          ]
+        }
+      },
+      "RETRIEVING_PACKET_DATA": {
+        "entry": [
+          {
+            "type": "get_parameters (pkt)"
+          },
+          {
+            "type": "get_DNS_transaction_id (pkt) (txid)"
+          },
+          {
+            "type": "get_DNS_query_from_DNS_packet (pkt) (cquery)"
+          },
+          {
+            "type": "get_query_name (cquery) (qname)"
+          },
+          {
+            "type": "get_IP_src (pkt) (cip)"
+          },
+          {
+            "type": "get_UDP_sport (pkt) (dport)"
+          },
+          {
+            "type": "get_UDP_dport (pkt) (sport)"
+          },
+          {
+            "type": "done"
+          }
+        ],
+        "on": {
+          "DONE": [
+            {
+              "target": "RESPONSE_PACKET_CREATION",
+              "actions": [
+                {
+                  "type": "assign (cip) (cip)"
+                },
+                {
+                  "type": "assign (qname) (qname)"
+                },
+                {
+                  "type": "assign (txid) (txid)"
+                },
+                {
+                  "type": "assign (dport) (dport)"
+                },
+                {
+                  "type": "assign (sport) (sport)"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "RESPONSE_PACKET_CREATION": {
+        "entry": [
+          {
+            "type": "create_DNS_packet (rpacket)"
+          },
+          {
+            "type": "set_IP_dst (rpacket cip) (rpacket)"
+          },
+          {
+            "type": "set_UDP_sport (rpacket sport) (rpacket)"
+          },
+          {
+            "type": "set_UDP_dport (rpacket dport) (rpacket)"
+          },
+          {
+            "type": "set_DNS_transaction_id (rpacket txid) (rpacket)"
+          },
+          {
+            "type": "set_DNS_transaction_id (rpacket txid) (rpacket)"
+          },
+          {
+            "type": "set_DNS_packet_response (rpacket) (rpacket)"
+          },
+          {
+            "type": "done"
+          }
+        ],
+        "on": {
+          "DONE": [
+            {
+              "target": "ADDING_RR_RECORDS",
+              "actions": [
+                {
+                  "type": "assign (rpacket) (rpacket)"
+                },
+                {
+                  "type": "assign (qname) (qname)"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "ADDING_RR_RECORDS": {
+        "entry": [
+          {
+            "type": "create_DNS_query (rquery)"
+          },
+          {
+            "type": "set_query_name (rquery qname) (rquery)"
+          },
+          {
+            "type": "add_DNS_query_to_DNS_packet (rpacket rquery) (rpkt)"
+          },
+          {
+            "type": "create_DNS_resource_record (rr)"
+          },
+          {
+            "type": "set_DNS_resource_record_domain (rr qname) (rr)"
+          },
+          {
+            "type": "get_from_file (variables response_ip) (response_ip)"
+          },
+          {
+            "type": "set_DNS_resource_record_value (rr response_ip) (rr)"
+          },
+          {
+            "type": "add_DNS_response_to_answer (rpacket rr) (rpacket)"
+          },
+          {
+            "type": "return_values (rpacket)"
+          }
+        ]
+      }
+    }
+  }

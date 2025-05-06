@@ -1,0 +1,60 @@
+{
+    "id": "DNS_QUERY_BUILD",
+    "initial": "INIT",
+    "states": {
+      "INIT": {
+        "on": {
+          "STARTED": [
+            {
+              "target": "BUILDING_QUERY",
+              "actions": [],
+              "meta": {}
+            }
+          ]
+        }
+      },
+      "BUILDING_QUERY": {
+        "entry": [
+          {
+            "type": "get_parameters (ip)"
+          },
+          {
+            "type": "get_from_file (variables qname) (qname)"
+          },
+          {
+            "type": "set_random_int (1000 2000) (source_port)"
+          },
+          {
+            "type": "set_random_int (1000 2000) (txid)"
+          },
+          {
+            "type": "create_DNS_packet (pkt)"
+          },
+          {
+            "type": "set_IP_dst (pkt ip) (pkt)"
+          },
+          {
+            "type": "set_UDP_sport (pkt source_port) (pkt)"
+          },
+          {
+            "type": "create_DNS_query (query)"
+          },
+          {
+            "type": "set_query_name (query qname) (query)"
+          },
+          {
+            "type": "add_DNS_query_to_DNS_packet (pkt query) (pkt)"
+          },
+          {
+            "type": "set_DNS_packet_query (pkt) (pkt)"
+          },
+          {
+            "type": "set_DNS_transaction_id (pkt txid) (pkt)"
+          },
+          {
+            "type": "return_values (pkt)"
+          }
+        ]
+      }
+    }
+  }
