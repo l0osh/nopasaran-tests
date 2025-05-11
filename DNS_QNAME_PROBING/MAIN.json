@@ -202,7 +202,7 @@
           "type": "add_element_to_dict (dict received) (dict)"
         },
         {
-          "type": "add_element_to_dict (dict response) (dict)"
+          "type": "add_element_to_dict (dict response_pkt) (dict)"
         },
         {
           "type": "done"
@@ -248,7 +248,7 @@
           "type": "add_element_to_dict (dict dns_response_sent) (dict)"
         },
         {
-          "type": "add_element_to_dict (dict query) (dict)"
+          "type": "add_element_to_dict (dict query_pkt) (dict)"
         },
         {
           "type": "send (rpacket)"
