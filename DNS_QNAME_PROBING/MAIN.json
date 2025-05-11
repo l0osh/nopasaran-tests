@@ -27,6 +27,15 @@
           "type": "get_from_file (variables client) (client)"
         },
         {
+          "type": "get_from_file (variables filter) (filter)"
+        },
+        {
+          "type": "packet_filter (filter)"
+        },
+        {
+          "type": "listen (queue)"
+        },
+        {
           "type": "create_dict (dict)"
         },
         {
@@ -50,6 +59,9 @@
               },
               {
                 "type": "assign (dict) (dict)"
+              },
+              {
+                "type": "assign (queue) (queue)"
               }
             ]
           },
@@ -67,6 +79,9 @@
               },
               {
                 "type": "assign (dict) (dict)"
+              },
+              {
+                "type": "assign (queue) (queue)"
               }
             ]
           }
@@ -107,6 +122,9 @@
               },
               {
                 "type": "assign (role) (role)"
+              },
+              {
+                "type": "assign (queue) (queue)"
               }
             ]
           }
@@ -116,16 +134,7 @@
     "LISTENING": {
       "entry": [
         {
-          "type": "get_from_file (variables filter) (filter)"
-        },
-        {
-          "type": "packet_filter (filter)"
-        },
-        {
-          "type": "set (5) (timeout)"
-        },
-        {
-          "type": "listen (queue)"
+          "type": "set (3) (timeout)"
         },
         {
           "type": "wait_packet_signal (queue timeout)"
@@ -222,12 +231,6 @@
         },
         {
           "type": "add_element_to_dict (dict dns_response_sent) (dict)"
-        },
-        {
-          "type": "set (0.5) (time)"
-        },
-        {
-          "type": "wait (time)"
         },
         {
           "type": "send (rpacket)"
