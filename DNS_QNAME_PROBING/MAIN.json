@@ -122,7 +122,7 @@
           "type": "packet_filter (filter)"
         },
         {
-          "type": "set (3) (timeout)"
+          "type": "set (5) (timeout)"
         },
         {
           "type": "listen (queue)"
