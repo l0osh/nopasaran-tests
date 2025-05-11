@@ -193,9 +193,6 @@
           "type": "get_first_element (queue) (response_pkt)"
         },
         {
-          "type": "get_DNS_answer_from_DNS_packet (response_pkt) (response)"
-        },
-        {
           "type": "set (true) (received)"
         },
         {
@@ -228,9 +225,6 @@
       "entry": [
         {
           "type": "get_first_element (queue) (query_pkt)"
-        },
-        {
-          "type": "get_DNS_query_from_DNS_packet (query_pkt) (query)"
         },
         {
           "type": "set (true) (received)"
