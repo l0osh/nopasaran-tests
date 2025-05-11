@@ -143,7 +143,7 @@
       "on": {
         "PACKET_AVAILABLE": [
           {
-            "target": "RESPONSE_RECIEVED",
+            "target": "RESPONSE_RECEIVED",
             "cond": "equal (role client)",
             "actions": [
               {
@@ -151,6 +151,9 @@
               },
               {
                 "type": "assign (dict) (dict)"
+              },
+              {
+                "type": "assign (queue) (queue)"
               }
             ]
           },
@@ -161,10 +164,10 @@
                 "type": "assign (ctrl) (ctrl)"
               },
               {
-                "type": "assign (queue) (queue)"
+                "type": "assign (dict) (dict)"
               },
               {
-                "type": "assign (dict) (dict)"
+                "type": "assign (queue) (queue)"
               }
             ]
           }
@@ -184,13 +187,22 @@
         ]
       }
     },
-    "RESPONSE_RECIEVED": {
+    "RESPONSE_RECEIVED": {
       "entry": [
+        {
+          "type": "get_first_element (queue) (response_pkt)"
+        },
+        {
+          "type": "get_DNS_answer_from_DNS_packet (response_pkt) (response)"
+        },
         {
           "type": "set (true) (received)"
         },
         {
           "type": "add_element_to_dict (dict received) (dict)"
+        },
+        {
+          "type": "add_element_to_dict (dict response) (dict)"
         },
         {
           "type": "done"
@@ -215,22 +227,28 @@
     "SENDING_RESPONSE": {
       "entry": [
         {
-          "type": "set (true) (received)"
+          "type": "get_first_element (queue) (query_pkt)"
         },
         {
-          "type": "get_first_element (queue) (pkt)"
+          "type": "get_DNS_query_from_DNS_packet (query_pkt) (query)"
+        },
+        {
+          "type": "set (true) (received)"
         },
         {
           "type": "set (true) (dns_response_sent)"
         },
         {
-          "type": "call (DNS_RESPONSE_BUILD pkt) (rpacket)"
+          "type": "call (DNS_RESPONSE_BUILD query_pkt) (rpacket)"
         },
         {
           "type": "add_element_to_dict (dict received) (dict)"
         },
         {
           "type": "add_element_to_dict (dict dns_response_sent) (dict)"
+        },
+        {
+          "type": "add_element_to_dict (dict query) (dict)"
         },
         {
           "type": "send (rpacket)"
