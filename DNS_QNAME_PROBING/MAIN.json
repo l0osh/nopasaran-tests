@@ -134,7 +134,7 @@
     "LISTENING": {
       "entry": [
         {
-          "type": "set (3) (timeout)"
+          "type": "set (7) (timeout)"
         },
         {
           "type": "wait_packet_signal (queue timeout)"
