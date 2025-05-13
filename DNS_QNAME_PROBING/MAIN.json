@@ -190,16 +190,13 @@
     "RESPONSE_RECEIVED": {
       "entry": [
         {
-          "type": "get_first_element (queue) (response_pkt)"
+          "type": "get_first_element (queue) (pkt)"
         },
         {
-          "type": "set (true) (received)"
+          "type": "format_dns_response_packet (pkt) (received)"
         },
         {
           "type": "add_element_to_dict (dict received) (dict)"
-        },
-        {
-          "type": "add_element_to_dict (dict response_pkt) (dict)"
         },
         {
           "type": "done"
@@ -227,22 +224,19 @@
           "type": "get_first_element (queue) (query_pkt)"
         },
         {
-          "type": "set (true) (received)"
-        },
-        {
           "type": "set (true) (dns_response_sent)"
         },
         {
-          "type": "call (DNS_RESPONSE_BUILD query_pkt) (rpacket)"
+          "type": "call (DNS_RESPONSE_BUILD pkt) (rpacket)"
         },
         {
-          "type": "add_element_to_dict (dict received) (dict)"
+          "type": "format_dns_query_packet (query_pkt) (received)"
         },
         {
           "type": "add_element_to_dict (dict dns_response_sent) (dict)"
         },
         {
-          "type": "add_element_to_dict (dict query_pkt) (dict)"
+          "type": "add_element_to_dict (dict received) (dict)"
         },
         {
           "type": "send (rpacket)"
